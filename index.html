@@ -46,12 +46,15 @@
         .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
         .product-card { background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-align: center; padding-bottom: 12px; position: relative; }
         
-        /* बदलाव यहाँ किया गया है - Contain और Background */
-        .product-card img { width: 100%; height: 150px; object-fit: contain; background: #f0f0f0; }
+        .product-card img { width: 100%; height: 150px; object-fit: contain; background: #f0f0f0; cursor: pointer; }
         
         .id-label { font-size: 11px; color: var(--primary); margin-top: 8px; font-weight: bold; background: #ffebee; display: inline-block; padding: 3px 8px; border-radius: 12px; }
-        .cat-label { font-size: 10px; color: var(--muted); margin-top: 4px; font-weight: bold; }
         
+        /* फुल स्क्रीन फोटो के लिए स्टाइल */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); padding: 20px; align-items: center; justify-content: center; }
+        .modal img { max-width: 100%; max-height: 90%; object-fit: contain; border-radius: 5px; }
+        .close-modal { position: absolute; top: 10px; right: 20px; color: white; font-size: 30px; font-weight: bold; cursor: pointer; }
+
         .empty-msg { text-align: center; color: var(--muted); margin-top: 30px; grid-column: 1 / -1; font-size: 14px; }
         .tag-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
         .tag-item { background: #e0e0e0; padding: 4px 8px; border-radius: 4px; font-size: 12px; display: flex; align-items: center; gap: 5px; }
@@ -63,6 +66,12 @@
     <div class="header">
         <h1 id="displayShopName">Adarsh Collection</h1>
         <a id="displayLocationUrl" href="#" target="_blank">📍 View Shop Location</a>
+    </div>
+
+    <!-- फोटो देखने का फुल स्क्रीन बॉक्स -->
+    <div id="imageModal" class="modal" onclick="closeModal()">
+        <span class="close-modal">&times;</span>
+        <img id="modalImg" src="">
     </div>
 
     <div class="switcher">
@@ -154,6 +163,27 @@
         let currentAdmin = false;
         let defaultCategory = "";
         let adminCurrentCategory = "";
+
+        // --- फोटो ज़ूम और बैक बटन फंक्शन ---
+        function openModal(imageSrc) {
+            document.getElementById('modalImg').src = imageSrc;
+            document.getElementById('imageModal').style.display = 'flex';
+            history.pushState({modal: 'open'}, null, null);
+        }
+
+        function closeModal() {
+            document.getElementById('imageModal').style.display = 'none';
+            if (history.state && history.state.modal === 'open') {
+                history.back();
+            }
+        }
+
+        window.addEventListener('popstate', function(event) {
+            if (document.getElementById('imageModal').style.display === 'flex') {
+                closeModal();
+            }
+        });
+        // ------------------------------------
 
         function verifyAdmin() {
             if (currentAdmin) { switchMode('admin'); return; }
@@ -278,7 +308,7 @@
             let filtered = allProducts.filter(p => p.category === category);
             filtered.forEach(product => {
                 const waLink = `https://wa.me/${appSettings.whatsapp}`;
-                grid.innerHTML += `<div class="product-card"><img src="${product.imageUrl}"><div class="id-label">ID: ${product.id.slice(-6)}</div><button class="whatsapp-btn" onclick="downloadAndAskWhatsApp('${product.imageUrl}', '${product.id.slice(-6)}', '${waLink}')">⬇️ Download & WhatsApp</button></div>`;
+                grid.innerHTML += `<div class="product-card"><img src="${product.imageUrl}" onclick="openModal('${product.imageUrl}')"><div class="id-label">ID: ${product.id.slice(-6)}</div><button class="whatsapp-btn" onclick="downloadAndAskWhatsApp('${product.imageUrl}', '${product.id.slice(-6)}', '${waLink}')">⬇️ Download & WhatsApp</button></div>`;
             });
         }
 
@@ -296,7 +326,7 @@
             const grid = document.getElementById('adminProductGrid'); grid.innerHTML = '';
             let filtered = allProducts.filter(p => p.category === category);
             filtered.forEach(product => {
-                grid.innerHTML += `<div class="product-card"><img src="${product.imageUrl}"><div class="id-label">ID: ${product.id.slice(-6)}</div><div class="btn-group"><button class="edit-btn" onclick="editProduct('${product.id}', '${product.category}')">✏️ Edit</button><button class="delete-btn" onclick="deleteProduct('${product.id}')">🗑️ Delete</button></div></div>`;
+                grid.innerHTML += `<div class="product-card"><img src="${product.imageUrl}" onclick="openModal('${product.imageUrl}')"><div class="id-label">ID: ${product.id.slice(-6)}</div><div class="btn-group"><button class="edit-btn" onclick="editProduct('${product.id}', '${product.category}')">✏️ Edit</button><button class="delete-btn" onclick="deleteProduct('${product.id}')">🗑️ Delete</button></div></div>`;
             });
         }
     </script>
