@@ -33,6 +33,9 @@
         
         .action-btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; }
         
+        /* पेजिनेशन बटन स्टाइल */
+        .load-more-btn { width: 100%; padding: 12px; background: var(--blue); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 20px; }
+
         .btn-group { display: flex; gap: 5px; justify-content: center; width: 90%; margin: 10px auto 0; }
         .edit-btn { background: var(--warning); color: #000; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; flex: 1; }
         .delete-btn { background: var(--danger); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: bold; cursor: pointer; flex: 1; }
@@ -50,7 +53,6 @@
         
         .id-label { font-size: 11px; color: var(--primary); margin-top: 8px; font-weight: bold; background: #ffebee; display: inline-block; padding: 3px 8px; border-radius: 12px; }
         
-        /* फुल स्क्रीन फोटो के लिए स्टाइल */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); padding: 20px; align-items: center; justify-content: center; }
         .modal img { max-width: 100%; max-height: 90%; object-fit: contain; border-radius: 5px; }
         .close-modal { position: absolute; top: 10px; right: 20px; color: white; font-size: 30px; font-weight: bold; cursor: pointer; }
@@ -68,7 +70,6 @@
         <a id="displayLocationUrl" href="#" target="_blank">📍 View Shop Location</a>
     </div>
 
-    <!-- फोटो देखने का फुल स्क्रीन बॉक्स -->
     <div id="imageModal" class="modal" onclick="closeModal()">
         <span class="close-modal">&times;</span>
         <img id="modalImg" src="">
@@ -84,6 +85,8 @@
         <div class="product-grid" id="productGrid">
             <div class="empty-msg">Loading products...</div>
         </div>
+        <!-- Load More Button -->
+        <button id="loadMoreBtn" class="load-more-btn" style="display:none;" onclick="loadMore()">Load More</button>
     </div>
 
     <div id="adminSection" class="section">
@@ -118,17 +121,17 @@
         </div>
 
         <div class="admin-card">
-            <h3>📤 Upload New Item</h3>
+            <h3>📤 Upload Multiple Items</h3>
             <div class="form-group">
-                <label>Select Item Photo:</label>
-                <input type="file" id="itemImage" accept="image/*">
+                <label>Select Photos:</label>
+                <input type="file" id="itemImage" accept="image/*" multiple>
             </div>
             <div class="form-group">
-                <label>Select Button for this Item:</label>
+                <label>Select Button for these Items:</label>
                 <select id="itemCategory"></select>
             </div>
-            <button class="action-btn" id="uploadBtn" onclick="uploadProduct()">Upload</button>
-            <div id="uploadStatus" style="font-size: 13px; margin-top: 10px; display: none;"></div>
+            <button class="action-btn" id="uploadBtn" onclick="uploadProduct()">Upload All</button>
+            <div id="uploadStatus" style="font-size: 13px; margin-top: 10px; display: none; font-weight: bold; color: var(--primary);"></div>
         </div>
 
         <div class="admin-card">
@@ -137,6 +140,7 @@
             <div class="product-grid" id="adminProductGrid">
                 <div class="empty-msg">Loading items...</div>
             </div>
+            <button id="loadMoreAdminBtn" class="load-more-btn" style="display:none;" onclick="loadMoreAdmin()">Load More</button>
         </div>
     </div>
 
@@ -163,8 +167,11 @@
         let currentAdmin = false;
         let defaultCategory = "";
         let adminCurrentCategory = "";
+        
+        // पेजिनेशन के लिए वेरिएबल
+        let displayedCount = 12;
+        let adminDisplayedCount = 12;
 
-        // --- फोटो ज़ूम और बैक बटन फंक्शन ---
         function openModal(imageSrc) {
             document.getElementById('modalImg').src = imageSrc;
             document.getElementById('imageModal').style.display = 'flex';
@@ -183,7 +190,6 @@
                 closeModal();
             }
         });
-        // ------------------------------------
 
         function verifyAdmin() {
             if (currentAdmin) { switchMode('admin'); return; }
@@ -259,26 +265,37 @@
             else { if(adminCurrentCategory) setAdminFilter(adminCurrentCategory); }
         });
 
-        function uploadProduct() {
+        async function uploadProduct() {
             const fileInput = document.getElementById('itemImage');
             const category = document.getElementById('itemCategory').value;
-            if (fileInput.files.length === 0) { alert("Please select a photo!"); return; }
+            const files = fileInput.files;
+            if (files.length === 0) { alert("Please select photos!"); return; }
             if (!category) { alert("Please create a button first!"); return; }
             const statusDiv = document.getElementById('uploadStatus'); statusDiv.style.display = 'block';
-            const reader = new FileReader();
-            reader.readAsDataURL(fileInput.files[0]);
-            reader.onload = function(event) {
-                const img = new Image(); img.src = event.target.result;
-                img.onload = async function() {
-                    const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 500; const scaleSize = MAX_WIDTH / img.width;
-                    canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize;
-                    const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                    const base64Image = canvas.toDataURL('image/jpeg', 0.7);
-                    await db.ref('catalogProducts').push({ imageUrl: base64Image, category: category, timestamp: Date.now() });
-                    alert("✅ Uploaded!"); statusDiv.style.display = 'none'; fileInput.value = '';
-                }
+            for (let i = 0; i < files.length; i++) {
+                statusDiv.innerText = `Uploading ${i + 1} of ${files.length}...`;
+                await processAndUpload(files[i], category);
             }
+            alert("✅ All selected photos uploaded!"); statusDiv.style.display = 'none'; fileInput.value = '';
+        }
+
+        function processAndUpload(file, category) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = function(event) {
+                    const img = new Image(); img.src = event.target.result;
+                    img.onload = async function() {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 500; const scaleSize = MAX_WIDTH / img.width;
+                        canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize;
+                        const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        const base64Image = canvas.toDataURL('image/jpeg', 0.7);
+                        await db.ref('catalogProducts').push({ imageUrl: base64Image, category: category, timestamp: Date.now() });
+                        resolve();
+                    }
+                }
+            });
         }
 
         function deleteProduct(id) { if(confirm("Delete this photo?")) db.ref('catalogProducts/' + id).remove(); }
@@ -304,12 +321,30 @@
 
         function filterProducts(category, btnElement) {
             if(btnElement) { document.querySelectorAll('#customerFilters button').forEach(b => b.classList.remove('active-filter')); btnElement.classList.add('active-filter'); defaultCategory = category; }
-            const grid = document.getElementById('productGrid'); grid.innerHTML = '';
-            let filtered = allProducts.filter(p => p.category === category);
-            filtered.forEach(product => {
+            displayedCount = 12;
+            renderCustomerGrid(true);
+        }
+
+        function renderCustomerGrid(isReset = false) {
+            const grid = document.getElementById('productGrid');
+            const loadMoreBtn = document.getElementById('loadMoreBtn');
+            if (isReset) grid.innerHTML = '';
+            let filtered = allProducts.filter(p => p.category === defaultCategory);
+            
+            let start = grid.children.length;
+            let toShow = filtered.slice(start, displayedCount);
+            
+            toShow.forEach(product => {
                 const waLink = `https://wa.me/${appSettings.whatsapp}`;
                 grid.innerHTML += `<div class="product-card"><img src="${product.imageUrl}" onclick="openModal('${product.imageUrl}')"><div class="id-label">ID: ${product.id.slice(-6)}</div><button class="whatsapp-btn" onclick="downloadAndAskWhatsApp('${product.imageUrl}', '${product.id.slice(-6)}', '${waLink}')">⬇️ Download & WhatsApp</button></div>`;
             });
+            
+            loadMoreBtn.style.display = (filtered.length > grid.children.length) ? 'block' : 'none';
+        }
+
+        function loadMore() {
+            displayedCount += 12;
+            renderCustomerGrid(false);
         }
 
         function renderAdminFilters() {
@@ -323,11 +358,29 @@
 
         function setAdminFilter(category, btnElement) {
             if(btnElement) { document.querySelectorAll('#adminFilters button').forEach(b => b.classList.remove('active-filter')); btnElement.classList.add('active-filter'); adminCurrentCategory = category; }
-            const grid = document.getElementById('adminProductGrid'); grid.innerHTML = '';
-            let filtered = allProducts.filter(p => p.category === category);
-            filtered.forEach(product => {
+            adminDisplayedCount = 12;
+            renderAdminGrid(true);
+        }
+
+        function renderAdminGrid(isReset = false) {
+            const grid = document.getElementById('adminProductGrid');
+            const loadMoreAdminBtn = document.getElementById('loadMoreAdminBtn');
+            if (isReset) grid.innerHTML = '';
+            let filtered = allProducts.filter(p => p.category === adminCurrentCategory);
+            
+            let start = grid.children.length;
+            let toShow = filtered.slice(start, adminDisplayedCount);
+            
+            toShow.forEach(product => {
                 grid.innerHTML += `<div class="product-card"><img src="${product.imageUrl}" onclick="openModal('${product.imageUrl}')"><div class="id-label">ID: ${product.id.slice(-6)}</div><div class="btn-group"><button class="edit-btn" onclick="editProduct('${product.id}', '${product.category}')">✏️ Edit</button><button class="delete-btn" onclick="deleteProduct('${product.id}')">🗑️ Delete</button></div></div>`;
             });
+            
+            loadMoreAdminBtn.style.display = (filtered.length > grid.children.length) ? 'block' : 'none';
+        }
+
+        function loadMoreAdmin() {
+            adminDisplayedCount += 12;
+            renderAdminGrid(false);
         }
     </script>
 </body>
