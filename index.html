@@ -521,7 +521,7 @@
                 if(refName === data.name && new Date() <= new Date(data.expiry)) accessGranted = true;
             });
             
-            if(!currentAdmin && refName !== 'Admin' && !accessGranted) {
+            if(!currentAdmin && refName !== 'adarshmaa' && !accessGranted) {
                 document.body.innerHTML = `<div style="text-align:center; padding:50px;"><h1>🚫 Access Denied</h1><p>Please contact admin.</p></div>`;
             }
         });
