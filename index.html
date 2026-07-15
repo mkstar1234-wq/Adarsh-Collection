@@ -104,6 +104,9 @@
             cursor: pointer; 
             transition: all 0.2s ease; 
             font-family: inherit;
+            white-space: normal; 
+            word-wrap: break-word; 
+            line-height: 1.4;
         }
         
         .switcher button.active { 
@@ -261,19 +264,18 @@
         .whatsapp-btn:hover { background: #20bd5a; transform: translateY(-1px); }
         
         .filters { 
-            display: flex; 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
             gap: 8px; 
-            overflow-x: auto; 
             padding-bottom: 12px; 
             margin-bottom: 16px; 
-            scrollbar-width: none;
         }
         
         .filters::-webkit-scrollbar { display: none; }
         
         .filters button { 
-            flex: 0 0 auto; 
-            padding: 8px 18px; 
+            width: 100%; 
+            padding: 8px 4px; 
             border: 1px solid #e2e8f0; 
             background: white; 
             color: var(--muted); 
@@ -283,6 +285,9 @@
             font-size: 13px;
             transition: all 0.2s ease;
             font-family: inherit;
+            white-space: normal; 
+            word-wrap: break-word; 
+            line-height: 1.2; 
         }
         
         .filters button:hover { border-color: var(--primary); color: var(--primary); }
@@ -418,6 +423,16 @@
 
     <div id="adminSection" class="section">
         <div class="admin-card">
+            <h3>🔑 Customer Access Manager</h3>
+            <div class="form-group">
+                <input type="text" id="custName" placeholder="Customer Name">
+                <input type="date" id="custExpiry" style="margin-top:10px;">
+            </div>
+            <button class="action-btn" onclick="addCustomer()">Add Customer</button>
+            <div class="tag-list" id="customerList"></div>
+        </div>
+
+        <div class="admin-card">
             <h3>⚙️ Shop Settings</h3>
             <div class="form-group">
                 <label>Shop Name:</label>
@@ -434,6 +449,10 @@
             <div class="form-group">
                 <label>Create New Admin Password:</label>
                 <input type="text" id="setAdminPassword" placeholder="Enter new password">
+            </div>
+            <div class="form-group">
+                <label>Customer View Button Message:</label>
+                <input type="text" id="setCustomerBtnText" placeholder="e.g. Customer View">
             </div>
             <button class="action-btn" onclick="saveSettings()">Save Settings</button>
         </div>
@@ -487,9 +506,34 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         
-        let appSettings = { shopName: "Adarsh Collection", whatsapp: "910000000000", locationUrl: "#", adminPassword: "1234" };
-        let allCategories = [];        let allProducts = [];
         let currentAdmin = false;
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const refName = urlParams.get('ref');
+
+        db.ref('customers').on('value', (snap) => {
+            const list = document.getElementById('customerList');
+            if(list) list.innerHTML = '';
+            let accessGranted = false;
+            snap.forEach(c => {
+                const data = c.val();
+                if(list) list.innerHTML += `<div class="tag-item">${data.name} (Exp: ${data.expiry}) <span onclick="db.ref('customers/${c.key}').remove()">✖</span></div>`;
+                if(refName === data.name && new Date() <= new Date(data.expiry)) accessGranted = true;
+            });
+            
+            if(!currentAdmin && refName !== 'Admin' && !accessGranted) {
+                document.body.innerHTML = `<div style="text-align:center; padding:50px;"><h1>🚫 Access Denied</h1><p>Please contact admin.</p></div>`;
+            }
+        });
+
+        function addCustomer() {
+            const name = document.getElementById('custName').value;
+            const expiry = document.getElementById('custExpiry').value;
+            if(name && expiry) db.ref('customers').push({name, expiry});
+        }
+        
+        let appSettings = { shopName: "Adarsh Collection", whatsapp: "910000000000", locationUrl: "#", adminPassword: "1234", customerBtnText: "Customer View" };
+        let allCategories = [];        let allProducts = [];
         let defaultCategory = "";
         let adminCurrentCategory = "";
         
@@ -546,10 +590,12 @@
             document.getElementById('setWhatsapp').value = appSettings.whatsapp;
             document.getElementById('setLocation').value = appSettings.locationUrl;
             document.getElementById('setAdminPassword').value = appSettings.adminPassword;
+            document.getElementById('setCustomerBtnText').value = appSettings.customerBtnText || "Customer View";
+            document.getElementById('btnCustomer').innerText = appSettings.customerBtnText || "Customer View";
         });
 
         function saveSettings() {
-            db.ref('appSettings').set({ shopName: document.getElementById('setShopName').value, whatsapp: document.getElementById('setWhatsapp').value, locationUrl: document.getElementById('setLocation').value, adminPassword: document.getElementById('setAdminPassword').value });
+            db.ref('appSettings').set({ shopName: document.getElementById('setShopName').value, whatsapp: document.getElementById('setWhatsapp').value, locationUrl: document.getElementById('setLocation').value, adminPassword: document.getElementById('setAdminPassword').value, customerBtnText: document.getElementById('setCustomerBtnText').value });
             alert("✅ Settings Saved Successfully!");
         }
 
@@ -704,4 +750,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
