@@ -511,18 +511,34 @@
         const urlParams = new URLSearchParams(window.location.search);
         const refName = urlParams.get('ref');
 
-        db.ref('customers').on('value', (snap) => {
+                db.ref('customers').on('value', (snap) => {
             const list = document.getElementById('customerList');
             if(list) list.innerHTML = '';
             let accessGranted = false;
+            
             snap.forEach(c => {
                 const data = c.val();
                 if(list) list.innerHTML += `<div class="tag-item">${data.name} (Exp: ${data.expiry}) <span onclick="db.ref('customers/${c.key}').remove()">✖</span></div>`;
-                if(refName === data.name && new Date() <= new Date(data.expiry)) accessGranted = true;
+                
+                // यहाँ कोड सिर्फ डेटाबेस चेक कर रहा है, कोई नाम हार्डकोडेड नहीं है
+                if(refName === data.name && new Date() <= new Date(data.expiry)) {
+                    accessGranted = true;
+                }
             });
             
-            if(!currentAdmin && refName !== 'adarshmaa' && !accessGranted) {
-                document.body.innerHTML = `<div style="text-align:center; padding:50px;"><h1>🚫 Access Denied</h1><p>Please contact admin.</p></div>`;
+            // अब अगर आप एडमिन नहीं हैं और डेटाबेस में नाम नहीं मिला, तो एक्सेस डिनाई हो जाएगा
+            if(!currentAdmin && !accessGranted) {
+            document.body.innerHTML = `
+    <div style="text-align:center; padding:50px;">
+        <h1>🚫 Access Denied</h1>
+        <p style="font-size: 18px; margin-top: 10px;">
+            To view this website again, please contact <b style="color:#ff4d4d;">Adarsh&nbsp;Collection</b><br>
+            <b style="color:#ff4d4d;">9291451252</b>
+        </p>
+    </div>
+`;
+
+
             }
         });
 
