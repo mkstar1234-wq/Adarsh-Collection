@@ -2,493 +2,428 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Adarsh Collection - Smart Catalog</title>
+    <!-- Modern Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Modern Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        
         :root {
-            --primary: #e11d48;
-            --primary-gradient: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
-            --bg: #f8fafc;
-            --card: #ffffff;
-            --text: #0f172a;
-            --muted: #64748b;
+            --primary: #4f46e5;
+            --secondary: #ec4899;
+            --bg: #f3f4f6;
+            --surface: #ffffff;
+            --text-dark: #1f2937;
+            --text-muted: #6b7280;
             --whatsapp: #25D366;
             --danger: #ef4444;
-            --warning: #f59e0b;
-            --blue: #3b82f6;
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
-            --radius: 12px;
+            --radius-lg: 20px;
+            --radius-md: 12px;
+            --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         }
-        
-        body { 
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            padding-bottom: 40px; 
-            -webkit-font-smoothing: antialiased;
-        }
-        
-        .header { 
-            background: var(--primary-gradient); 
-            color: white; 
-            padding: 16px 20px; 
-            display: flex;
-            align-items: center;
-            position: relative;
-            box-shadow: var(--shadow-md); 
-        }
-        
-        .admin-header-btn {
-            position: absolute;
-            top: 50%;            left: 16px;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-family: inherit;
-        }
-        
-        .admin-header-btn:hover { background: rgba(255, 255, 255, 0.25); }
-        .admin-header-btn.active { background: white; color: var(--primary); box-shadow: var(--shadow-sm); }
-        
-        .header-content {
-            flex: 1;
-            text-align: center;
-            padding: 0 70px;
-        }
-        
-        .header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.025em; margin-bottom: 4px; }
-        .header a { color: #fecdd3; text-decoration: none; font-size: 13px; font-weight: 500; transition: color 0.2s; }
-        .header a:hover { color: white; }
 
-        @media (max-width: 400px) {
-            .header-content { padding: 0 60px; }
-            .header h1 { font-size: 18px; }
-            .admin-header-btn { padding: 6px 10px; font-size: 12px; left: 10px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text-dark); 
+            padding-bottom: 60px; 
+            -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            background-attachment: fixed;
+            transition: background 0.5s ease;
         }
-        
-        .switcher { 
-            display: flex; 
-            margin: 20px 16px; 
-            background: #e2e8f0; 
-            border-radius: 10px; 
-            padding: 4px;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+
+        /* Themes */
+        body.theme-default { background: var(--bg); }
+        body.theme-bonalu { background: linear-gradient(135deg, #fde047 0%, #d97706 100%); }
+        body.theme-bathukamma { background: linear-gradient(135deg, #f472b6 0%, #be185d 100%); }
+        body.theme-ugadi { background: linear-gradient(135deg, #86efac 0%, #15803d 100%); }
+        body.theme-sankranti { background: linear-gradient(135deg, #fdba74 0%, #c2410c 100%); }
+        body.theme-wedding { background: linear-gradient(135deg, #fca5a5 0%, #be123c 100%); }
+        body.theme-birthday { background: linear-gradient(135deg, #93c5fd 0%, #1d4ed8 100%); }
+        body.theme-saree { background: linear-gradient(135deg, #f9a8d4 0%, #9d174d 100%); }
+        body.theme-dhoti { background: linear-gradient(135deg, #cbd5e1 0%, #475569 100%); }
+
+        /* Marquee Announcement */
+        .marquee-container {
+            background: var(--primary);
+            color: white;
+            padding: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            text-align: center;
+            overflow: hidden;
+            display: none;
         }
-        
-        .switcher button { 
-            flex: 1; 
-            padding: 10px; 
-            border: none;             font-weight: 600; 
-            font-size: 14px; 
-            color: var(--muted);
-            background: transparent;
-            border-radius: 8px;
-            cursor: pointer; 
-            transition: all 0.2s ease; 
-            font-family: inherit;
-            white-space: normal; 
-            word-wrap: break-word; 
-            line-height: 1.4;
-        }
-        
-        .switcher button.active { 
-            background: white; 
-            color: var(--primary); 
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .section { display: none; padding: 0 16px; }
-        .section.active { display: block; animation: fadeIn 0.3s ease; }
-        
-        @keyframes fadeIn { 
-            from { opacity: 0; transform: translateY(5px); } 
-            to { opacity: 1; transform: translateY(0); } 
-        }
-        
-        .admin-card { 
-            background: var(--card); 
-            padding: 24px; 
-            border-radius: var(--radius); 
-            box-shadow: var(--shadow-md); 
-            margin-bottom: 20px; 
-            border: 1px solid #f1f5f9;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .admin-card:hover { box-shadow: var(--shadow-lg); }
-        
-        .admin-card h3 { 
-            margin-bottom: 16px; 
-            color: var(--text); 
-            font-size: 16px; 
-            font-weight: 700;
-            border-bottom: 1px solid #f1f5f9; 
-            padding-bottom: 12px; 
+        .marquee-text { white-space: nowrap; animation: slideLeft 15s linear infinite; display: inline-block; }
+        @keyframes slideLeft { 100% { transform: translateX(-100%); } 0% { transform: translateX(100%); } }
+
+        /* Header */
+        .header { 
+            background: rgba(255, 255, 255, 0.9); 
+            backdrop-filter: blur(12px);
+            padding: 20px; 
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 8px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); 
+            text-align: center;
         }
+
+        .header-top { display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 10px; }
         
-        .form-group { margin-bottom: 16px; }
-                .form-group label { 
-            display: block; 
-            margin-bottom: 6px; 
-            font-size: 12px; 
-            font-weight: 600; 
-            color: var(--muted); 
-            letter-spacing: 0.05em; 
-            text-transform: uppercase; 
+        .header h1 { 
+            font-size: 24px; 
+            font-weight: 700; 
+            color: var(--primary);
+            margin-bottom: 4px;
+            line-height: 1.2;
         }
-        
-        .form-group input, .form-group select { 
-            width: 100%; 
-            padding: 12px 14px; 
-            border: 1px solid #cbd5e1; 
-            border-radius: 8px; 
-            font-size: 14px; 
-            color: var(--text);
-            background: #f8fafc;
-            transition: all 0.2s ease;
-            font-family: inherit;
+
+        .subtext-display {
+            font-size: 13px;
+            color: var(--text-muted);
+            white-space: pre-wrap;
+            margin-bottom: 8px;
+            line-height: 1.5;
+            width: 100%;
         }
-        
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: white;
-            box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.1);
+
+        .header a { color: var(--text-muted); text-decoration: none; font-size: 13px; font-weight: 500; display: inline-flex; align-items: center; gap: 6px; }
+        .header a:hover { color: var(--primary); }
+
+        .admin-header-btn {
+            background: rgba(0,0,0,0.05); color: var(--text-dark);
+            border: none; padding: 8px 12px; border-radius: var(--radius-md);
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            transition: all 0.3s ease; display: flex; align-items: center; gap: 6px;
         }
-        
-        .action-btn { 
-            width: 100%; 
-            padding: 12px; 
-            background: var(--primary-gradient); 
-            color: white; 
-            border: none; 
-            border-radius: 8px; 
-            font-weight: 600; 
-            font-size: 15px; 
+        .admin-header-btn:hover { background: var(--primary); color: white; }
+
+        .section { display: none; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .section.active { display: block; animation: slideUpFade 0.4s ease forwards; }
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Filters (Wrapped) */
+        .filters { 
+            display: flex; 
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px; 
+            padding-bottom: 16px; 
+            margin-bottom: 20px; 
+        }
+
+        .filters button { 
+            padding: 10px 20px; 
+            border: 2px solid transparent; 
+            background: var(--surface); 
+            color: var(--text-muted); 
+            border-radius: 30px; 
             cursor: pointer; 
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px -1px rgba(225, 29, 72, 0.2);
-            font-family: inherit;
+            font-weight: 500; 
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
         }
-        
-        .action-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 8px -1px rgba(225, 29, 72, 0.3); }
-        .action-btn:active { transform: translateY(0); }
+        .filters button:hover { border-color: var(--primary); color: var(--primary); }
+        .filters button.active-filter { background: var(--primary); color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+
+        /* Product Grid */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; }
+        @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); } }
+
+        .product-card { 
+            background: var(--surface); border-radius: var(--radius-lg); overflow: hidden; 
+            box-shadow: var(--shadow-soft); text-align: center; padding: 12px; 
+            position: relative; transition: all 0.3s ease;
+            display: flex; flex-direction: column; gap: 10px;
+        }
+        .product-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+
+        .image-container {
+            width: 100%; padding-top: 100%; position: relative; border-radius: var(--radius-md);
+            overflow: hidden; background: #f8fafc;
+        }
+
+        .product-card img, .product-card video { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
+            object-fit: cover; cursor: pointer; transition: transform 0.3s ease;
+        }
+
+        .id-label { 
+            font-size: 13px; color: var(--primary); font-weight: 600; 
+            background: rgba(0,0,0,0.03); display: inline-block; 
+            padding: 6px 14px; border-radius: 20px; align-self: center;
+        }
+
+        /* Action Buttons */
+        .whatsapp-btn { 
+            background: var(--whatsapp); color: white; border: none; padding: 12px; 
+            border-radius: var(--radius-md); font-weight: 600; font-size: 13px; 
+            cursor: pointer; display: flex; align-items: center; justify-content: center; 
+            gap: 6px; transition: all 0.3s ease;
+        }
+        .whatsapp-btn:hover { background: #1ebc56; }
 
         .load-more-btn { 
-            width: 100%; 
-            padding: 14px;             background: white; 
-            color: var(--primary); 
-            border: 1px solid var(--primary); 
-            border-radius: 8px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            margin-top: 24px; 
-            transition: all 0.2s ease;
-            font-family: inherit;
+            width: 100%; max-width: 300px; margin: 30px auto 0; display: block;
+            padding: 14px; background: var(--primary); color: white; border: none; 
+            border-radius: 30px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2); font-size: 15px;
         }
-        
-        .load-more-btn:hover { background: #fff1f2; transform: translateY(-1px); }
+        .load-more-btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
 
-        .btn-group { display: flex; gap: 8px; justify-content: center; width: 100%; margin-top: 12px; }
-        
-        .edit-btn { 
-            background: #fffbeb; 
-            color: #b45309; 
-            border: 1px solid #fcd34d; 
-            padding: 8px 12px; 
-            border-radius: 6px; 
-            font-size: 13px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            flex: 1; 
-            transition: all 0.2s; 
-            font-family: inherit; 
-        }
-        .edit-btn:hover { background: #fef3c7; }
-        
-        .delete-btn { 
-            background: #fef2f2; 
-            color: var(--danger); 
-            border: 1px solid #fecaca; 
-            padding: 8px 12px; 
-            border-radius: 6px; 
-            font-size: 13px; 
-            font-weight: 600; 
-            cursor: pointer; 
-            flex: 1; 
-            transition: all 0.2s; 
-            font-family: inherit; 
-        }
-        .delete-btn:hover { background: #fee2e2; }
-        
-        .whatsapp-btn { 
-            background: var(--whatsapp); 
-            color: white; 
-            border: none; 
-            padding: 10px 12px;             border-radius: 8px; 
-            font-weight: 600; 
-            font-size: 13px; 
-            cursor: pointer; 
-            width: calc(100% - 24px); 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            gap: 6px; 
-            margin: 12px auto 0; 
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(37, 211, 102, 0.2);
-            font-family: inherit;
-        }
-        
-        .whatsapp-btn:hover { background: #20bd5a; transform: translateY(-1px); }
-        
-        .filters { 
-            display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            gap: 8px; 
-            padding-bottom: 12px; 
-            margin-bottom: 16px; 
-        }
-        
-        .filters::-webkit-scrollbar { display: none; }
-        
-        .filters button { 
-            width: 100%; 
-            padding: 8px 4px; 
-            border: 1px solid #e2e8f0; 
-            background: white; 
-            color: var(--muted); 
-            border-radius: 20px; 
-            cursor: pointer; 
-            font-weight: 600; 
-            font-size: 13px;
-            transition: all 0.2s ease;
-            font-family: inherit;
-            white-space: normal; 
-            word-wrap: break-word; 
-            line-height: 1.2; 
-        }
-        
-        .filters button:hover { border-color: var(--primary); color: var(--primary); }
-        
-        .filters button.active-filter { 
-            background: var(--primary-gradient); 
-            color: white; 
-            border-color: transparent;
-            box-shadow: 0 2px 4px rgba(225, 29, 72, 0.2);
-        }        
-        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
-        
-        @media (min-width: 768px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
-        @media (min-width: 1024px) { .product-grid { grid-template-columns: repeat(4, 1fr); } }
-        
-        .product-card { 
-            background: white; 
-            border-radius: var(--radius); 
-            overflow: hidden; 
-            box-shadow: var(--shadow-sm); 
-            border: 1px solid #f1f5f9;
-            text-align: center; 
-            padding-bottom: 16px; 
-            position: relative; 
-            transition: all 0.2s ease;
-        }
-        
-        .product-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-        
-        .product-card img { 
-            width: 100%; 
-            height: 160px; 
-            object-fit: contain; 
-            background: #f8fafc; 
-            cursor: pointer; 
-            transition: transform 0.3s ease;
-        }
-        
-        .product-card:hover img { transform: scale(1.03); }
-        
-        .id-label { 
-            font-size: 11px; 
-            color: var(--primary); 
-            margin-top: 10px; 
-            font-weight: 700; 
-            background: #fff1f2; 
-            display: inline-block; 
-            padding: 4px 10px; 
-            border-radius: 12px; 
-            letter-spacing: 0.05em;
-        }
-        
-        .modal { 
-            display: none; 
-            position: fixed; 
-            z-index: 1000; 
-            left: 0; 
-            top: 0; 
-            width: 100%;             height: 100%; 
-            background: rgba(15, 23, 42, 0.9); 
-            backdrop-filter: blur(8px);
-            padding: 20px; 
-            align-items: center; 
-            justify-content: center; 
-            animation: fadeIn 0.2s forwards;
-        }
-        
-        .modal img { max-width: 100%; max-height: 90vh; object-fit: contain; border-radius: 8px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); }
-        
-        .close-modal { position: absolute; top: 20px; right: 24px; color: white; font-size: 32px; font-weight: 300; cursor: pointer; transition: transform 0.2s; line-height: 1; }
-        .close-modal:hover { transform: scale(1.1); }
+        .action-btn { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: var(--radius-md); font-weight: 600; cursor: pointer; margin-top: 10px; }
 
-        .empty-msg { text-align: center; color: var(--muted); margin-top: 40px; grid-column: 1 / -1; font-size: 14px; font-weight: 500; }
+        /* Admin Layout */
+        .admin-card { background: var(--surface); padding: 24px; border-radius: var(--radius-lg); box-shadow: var(--shadow-soft); margin-bottom: 24px; }
+        .admin-card h3 { margin-bottom: 20px; color: var(--text-dark); font-size: 16px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
         
-        .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-        
-        .tag-item { 
-            background: #f1f5f9; 
-            color: var(--text);
-            padding: 6px 12px; 
-            border-radius: 6px; 
-            font-size: 13px; 
-            font-weight: 500;
-            display: flex; 
-            align-items: center; 
-            gap: 8px; 
-            border: 1px solid #e2e8f0;
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 500; color: var(--text-muted); }
+        .form-group input, .form-group select, .form-group textarea { 
+            width: 100%; padding: 12px; border: 1px solid #e5e7eb; border-radius: var(--radius-md); 
+            font-size: 14px; background: #f9fafb; font-family: inherit; resize: vertical; overflow: hidden;
         }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--primary); outline: none; background: white; }
+        .form-row { display: flex; gap: 10px; }
+        .form-row > div { flex: 1; }
+
+        /* Footer */
+        .footer { text-align: center; padding: 20px; margin-top: 20px; color: var(--text-muted); font-size: 13px; }
         
-        .tag-item span { 
-            color: var(--danger); 
-            font-weight: bold; 
-            cursor: pointer; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #fee2e2;
-            font-size: 11px;
-            transition: all 0.2s;
-        }
+        /* Updated Social Links Design */
+        .social-links { display: flex; justify-content: center; gap: 25px; margin-top: 15px; font-size: 32px; }
+        .social-links a { color: var(--text-muted); transition: color 0.3s, transform 0.3s; }
+        .social-links a:hover { color: var(--primary); transform: scale(1.1); }
+
+        /* Modal Settings */
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); padding: 20px; align-items: center; justify-content: center; }
+        .modal-content-wrapper { position: relative; max-width: 100%; max-height: 90vh; border-radius: var(--radius-md); }
+        .modal img { width: 100%; height: auto; max-height: 90vh; object-fit: contain; }
+        .close-modal { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; z-index: 1001; }
         
-        .tag-item span:hover { background: var(--danger); color: white; }
+        .tag-list { display: flex; flex-wrap: wrap; gap: 10px; }
+        .tag-item { background: #f1f5f9; padding: 8px 12px; border-radius: 8px; font-size: 13px; display: flex; gap: 10px; align-items: center; }
+        .tag-item i { color: var(--danger); cursor: pointer; }
+
+        /* Helper Classes */
+        .floating-back { display: none; position: fixed; bottom: 20px; right: 20px; background: var(--primary); color: white; border: none; border-radius: 50px; padding: 12px 24px; font-weight: 600; cursor: pointer; z-index: 99; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .btn-group { display: flex; gap: 8px; }
+        .edit-btn, .delete-btn { flex: 1; padding: 8px; border: none; border-radius: 6px; cursor: pointer; color: white; }
+        .edit-btn { background: #f59e0b; } .delete-btn { background: var(--danger); }
     </style>
 </head>
 <body>
+
+    <div class="marquee-container" id="marqueeBar">
+        <span class="marquee-text" id="marqueeTextDisplay">Welcome to Adarsh Collection! Special Offers Available.</span>
+    </div>
+
     <div class="header">
-        <button id="btnAdmin" class="admin-header-btn" onclick="verifyAdmin()">🔒 Admin</button>
-        <div class="header-content">
-            <h1 id="displayShopName">Adarsh Collection</h1>
-            <a id="displayLocationUrl" href="#" target="_blank">📍 View Shop Location</a>
+        <div class="header-top">
+            <button id="btnAdmin" class="admin-header-btn" onclick="verifyAdmin()"><i class="fa-solid fa-lock"></i> Admin</button>
+            <a id="displayLocationUrl" href="#" target="_blank"><i class="fa-solid fa-location-dot"></i> View Map</a>
+        </div>
+        <h1 id="displayShopName">Adarsh Collection</h1>
+        <div class="subtext-display" id="displaySubText">Welcome to our digital catalog.</div>
+    </div>
+
+    <button id="floatingBack" class="floating-back" onclick="switchMode('customer')">
+        <i class="fa-solid fa-store"></i> <span id="btnCustomerText">Customer View</span>
+    </button>
+
+    <div id="imageModal" class="modal">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <div class="modal-content-wrapper">
+            <img id="modalImg" src="">
         </div>
     </div>
 
-    <div id="imageModal" class="modal" onclick="closeModal()">
-        <span class="close-modal">&times;</span>
-        <img id="modalImg" src="">
-    </div>
-
-    <div class="switcher">
-        <button id="btnCustomer" class="active" onclick="switchMode('customer')">Customer View</button>
-    </div>
-
+    <!-- CUSTOMER SECTION -->
     <div id="customerSection" class="section active">
         <div class="filters" id="customerFilters"></div>
-        <div class="product-grid" id="productGrid">
-            <div class="empty-msg">Loading products...</div>
-        </div>
+        <div class="product-grid" id="productGrid"></div>
         <button id="loadMoreBtn" class="load-more-btn" style="display:none;" onclick="loadMore()">Load More</button>
+        
+        <div class="footer">
+            <div id="footerTermsDisplay"></div>
+            <!-- Dynamic Social Links Container -->
+            <div class="social-links" id="socialLinksDisplay"></div>
+        </div>
     </div>
 
+    <!-- ADMIN SECTION -->
     <div id="adminSection" class="section">
+        
         <div class="admin-card">
-            <h3>🔑 Customer Access Manager</h3>
+            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Magic VIP Link (24h Access)</h3>
+            <p style="font-size:13px; color:gray; margin-bottom:10px;">एक क्लिक में बिना पासवर्ड वाला लिंक बनाएं जिसे ग्राहक 24 घंटे तक देख सकें।</p>
             <div class="form-group">
-                <input type="text" id="custName" placeholder="Customer Name">
-                <input type="date" id="custExpiry" style="margin-top:10px;">
+                <label>Select Categories for VIP Link:</label>
+                <div class="tag-list" id="vipCategoryCheckboxes" style="margin-bottom:10px;"></div>
+            </div>
+            <button class="action-btn" onclick="generateVipLink()" style="background:var(--secondary)"><i class="fa-solid fa-link"></i> Generate Magic Link</button>
+        </div>
+
+        <div class="admin-card">
+            <h3><i class="fa-solid fa-users-gear"></i> Manual Customer Access</h3>
+            <div class="form-row">
+                <div class="form-group"><input type="text" id="custName" placeholder="Customer Name"></div>
+                <div class="form-group"><input type="date" id="custExpiry"></div>
+            </div>
+            <div class="form-group">
+                <label>Select Categories for this Customer:</label>
+                <div class="tag-list" id="manualCategoryCheckboxes" style="margin-bottom:10px;"></div>
             </div>
             <button class="action-btn" onclick="addCustomer()">Add Customer</button>
-            <div class="tag-list" id="customerList"></div>
+            <div class="tag-list" id="customerList" style="margin-top:15px;"></div>
         </div>
 
         <div class="admin-card">
-            <h3>⚙️ Shop Settings</h3>
+            <h3><i class="fa-solid fa-palette"></i> Design & UI Settings</h3>
+            <div class="form-group">
+                <label>Theme Color:</label>
+                <input type="color" id="setThemeColor" style="height:40px; padding:2px;">
+            </div>
+            <div class="form-group">
+                <label>Festive / Event Theme:</label>
+                <select id="setFestiveTheme">
+                    <option value="default">Default Theme</option>
+                    <option value="bonalu">Bonalu</option>
+                    <option value="bathukamma">Bathukamma</option>
+                    <option value="ugadi">Ugadi</option>
+                    <option value="sankranti">Sankranti</option>
+                    <option value="wedding">Wedding (Shaadi)</option>
+                    <option value="birthday">Birthday Party</option>
+                    <option value="saree">Saree Function (Langa Voni)</option>
+                    <option value="dhoti">Dhoti Function (Pancha Kattu)</option>
+                </select>
+            </div>
             <div class="form-group">
                 <label>Shop Name:</label>
-                <input type="text" id="setShopName" placeholder="e.g. Adarsh Collection">
+                <input type="text" id="setShopName">
             </div>
             <div class="form-group">
-                <label>WhatsApp Number (with 91):</label>
-                <input type="number" id="setWhatsapp" placeholder="e.g. 919876543210">
+                <label>Shop Address/Sub-text (Auto-height):</label>
+                <textarea id="setSubText" rows="3" oninput="autoGrow(this)"></textarea>
             </div>
             <div class="form-group">
-                <label>Google Map Location Link:</label>
-                <input type="text" id="setLocation" placeholder="Paste Map URL here">
+                <label>Show Top Marquee Banner?</label>
+                <select id="setShowMarquee">
+                    <option value="true">Yes</option>
+                    <option value="false">No</option>
+                </select>
             </div>
             <div class="form-group">
-                <label>Create New Admin Password:</label>
-                <input type="text" id="setAdminPassword" placeholder="Enter new password">
+                <label>Marquee Banner Text:</label>
+                <input type="text" id="setMarqueeText">
             </div>
-            <div class="form-group">
-                <label>Customer View Button Message:</label>
-                <input type="text" id="setCustomerBtnText" placeholder="e.g. Customer View">
+            
+            <!-- Updated Editable Watermark Settings with Textarea for multi-line -->
+            <div class="form-row" style="margin-top: 10px;">
+                <div class="form-group" style="flex:2;">
+                    <label>Watermark Text (Press Enter for new line):</label>
+                    <textarea id="setWatermarkText" rows="2" placeholder="Leave empty for Shop Name" oninput="autoGrow(this)"></textarea>
+                </div>
+                <div class="form-group" style="flex:1;">
+                    <label>Transparency (0.1 to 1.0):</label>
+                    <input type="number" step="0.1" min="0.1" max="1.0" id="setWatermarkOpacity">
+                </div>
             </div>
-            <button class="action-btn" onclick="saveSettings()">Save Settings</button>
+            
+            <button class="action-btn" onclick="saveSettings()">Save UI Settings</button>
         </div>
 
         <div class="admin-card">
-            <h3>🗂️ Create New Buttons</h3>            <div class="form-group">
-                <input type="text" id="newCategory" placeholder="e.g. Toys or ₹100-₹200">
+            <h3><i class="fa-solid fa-gears"></i> Shop Settings</h3>
+            <div class="form-row">
+                <div class="form-group"><label>WhatsApp Number (91...):</label><input type="number" id="setWhatsapp"></div>
+                <div class="form-group"><label>Admin Password:</label><input type="text" id="setAdminPassword"></div>
             </div>
-            <button class="action-btn" onclick="addCategory()">Add Button</button>
+            <div class="form-group"><label>Map Link:</label><input type="text" id="setLocation"></div>
+            <div class="form-row">
+                <div class="form-group"><label>Product ID Prefix (e.g., ID:, Price:):</label><input type="text" id="setPrefix"></div>
+                <div class="form-group"><label>Items per Page:</label><input type="number" id="setPageLimit"></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>Customer View Btn Text:</label><input type="text" id="setCustomerBtnText"></div>
+                <div class="form-group"><label>Load More Btn Text:</label><input type="text" id="setLoadMoreText"></div>
+            </div>
+            <div class="form-group"><label>Access Denied Message:</label><textarea id="setDeniedMsg" rows="2" oninput="autoGrow(this)"></textarea></div>
+            <div class="form-group"><label>Footer Rules (Timings, Returns):</label><textarea id="setFooterTerms" rows="2" oninput="autoGrow(this)"></textarea></div>
+            <button class="action-btn" onclick="saveSettings()">Save Shop Settings</button>
+        </div>
+
+        <!-- Manage Dynamic Social Media Links -->
+        <div class="admin-card">
+            <h3><i class="fa-solid fa-share-nodes"></i> Manage Social Media Links</h3>
+            <div class="form-row">
+                <div class="form-group" style="flex:1;">
+                    <label>Select Platform:</label>
+                    <select id="newSocialPlatform">
+                        <option value="instagram">Instagram</option>
+                        <option value="facebook">Facebook</option>
+                        <option value="whatsapp">WhatsApp</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="youtube">YouTube</option>
+                        <option value="pinterest">Pinterest</option>
+                        <option value="telegram">Telegram</option>
+                        <option value="linkedin">LinkedIn</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex:2;">
+                    <label>Enter Full URL:</label>
+                    <input type="text" id="newSocialUrl" placeholder="https://...">
+                </div>
+            </div>
+            <button class="action-btn" onclick="addSocialLink()">Add Social Link</button>
+            <div class="tag-list" id="adminSocialList" style="margin-top:15px;"></div>
+        </div>
+
+        <div class="admin-card">
+            <h3><i class="fa-solid fa-tags"></i> Manage Categories</h3>
+            <div class="form-row">
+                <div class="form-group" style="flex:3;"><input type="text" id="newCategory" placeholder="e.g. Toys or ₹100-₹200"></div>
+                <button class="action-btn" style="flex:1; margin-top:0;" onclick="addCategory()">Add</button>
+            </div>
             <div class="tag-list" id="adminCategoryList"></div>
         </div>
 
         <div class="admin-card">
-            <h3>📤 Upload Multiple Items</h3>
+            <h3><i class="fa-solid fa-cloud-arrow-up"></i> Upload Items (Auto-Watermark & Video Support)</h3>
             <div class="form-group">
-                <label>Select Photos:</label>
-                <input type="file" id="itemImage" accept="image/*" multiple>
+                <label>Select Photos or Short Videos (GIF/MP4):</label>
+                <input type="file" id="itemImage" accept="image/*,video/mp4,image/gif" multiple>
             </div>
             <div class="form-group">
-                <label>Select Button for these Items:</label>
+                <label>Select Category:</label>
                 <select id="itemCategory"></select>
             </div>
-            <button class="action-btn" id="uploadBtn" onclick="uploadProduct()">Upload All</button>
-            <div id="uploadStatus" style="font-size: 13px; margin-top: 10px; display: none; font-weight: bold; color: var(--primary);"></div>
+            <button class="action-btn" onclick="uploadProduct()">Upload All Items</button>
+            <div id="uploadStatus" style="font-size:14px; margin-top:15px; font-weight:600; color:var(--primary); text-align:center; display:none;"></div>
         </div>
 
         <div class="admin-card">
-            <h3>🗑️ Manage / Edit Uploaded Items</h3>
+            <h3><i class="fa-solid fa-pen-to-square"></i> Manage Uploaded Items</h3>
             <div class="filters" id="adminFilters"></div>
-            <div class="product-grid" id="adminProductGrid">
-                <div class="empty-msg">Loading items...</div>
-            </div>
+            <div class="product-grid" id="adminProductGrid"></div>
             <button id="loadMoreAdminBtn" class="load-more-btn" style="display:none;" onclick="loadMoreAdmin()">Load More</button>
         </div>
     </div>
 
+    <!-- Firebase SDK Scripts -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
@@ -502,117 +437,249 @@
           messagingSenderId: "650395998229",
           appId: "1:650395998229:web:9b8315d8d634328df3561c"
         };
-        
+
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
-        
+
         let currentAdmin = false;
-        
         const urlParams = new URLSearchParams(window.location.search);
         const refName = urlParams.get('ref');
 
-                db.ref('customers').on('value', (snap) => {
+        let appSettings = { 
+            shopName: "Adarsh Collection", subText: "Welcome to our digital catalog.", 
+            whatsapp: "919291451252", locationUrl: "#", adminPassword: "1234", 
+            customerBtnText: "Customer View", loadMoreText: "Load More", 
+            themeColor: "#4f46e5", festiveTheme: "default", 
+            showMarquee: "false", marqueeText: "Welcome!", 
+            pageLimit: 12, prefix: "ID:", deniedMsg: "To view this catalog, please contact us on WhatsApp.",
+            footerTerms: "No Return, No Exchange.", 
+            watermarkText: "Adarsh Collection", watermarkOpacity: 0.3,
+            socialLinks: {}
+        };
+
+        let allowedCustomerCategories = null; 
+
+        // Auto Grow Textarea function
+        function autoGrow(element) {
+            element.style.height = "5px";
+            element.style.height = (element.scrollHeight) + "px";
+        }
+
+        function getSelectedCategories(containerId) {
+            let checkboxes = document.querySelectorAll(`#${containerId} input[type="checkbox"]:checked`);
+            return Array.from(checkboxes).map(cb => cb.value);
+        }
+
+        // Access Control Logic
+        db.ref('customers').on('value', (snap) => {
             const list = document.getElementById('customerList');
             if(list) list.innerHTML = '';
             let accessGranted = false;
-            
+            let foundCategories = null;
+
             snap.forEach(c => {
                 const data = c.val();
-                if(list) list.innerHTML += `<div class="tag-item">${data.name} (Exp: ${data.expiry}) <span onclick="db.ref('customers/${c.key}').remove()">✖</span></div>`;
-                
-                // यहाँ कोड सिर्फ डेटाबेस चेक कर रहा है, कोई नाम हार्डकोडेड नहीं है
+                let catsDisplay = data.allowedCategories ? ` [${data.allowedCategories.length} Cats]` : ' [All Cats]';
+                if(list) list.innerHTML += `<div class="tag-item">${data.name} (Exp: ${data.expiry})${catsDisplay} <i class="fa-solid fa-circle-xmark" onclick="db.ref('customers/${c.key}').remove()"></i></div>`;
                 if(refName === data.name && new Date() <= new Date(data.expiry)) {
                     accessGranted = true;
+                    if(data.allowedCategories) foundCategories = data.allowedCategories;
                 }
             });
-            
-            // अब अगर आप एडमिन नहीं हैं और डेटाबेस में नाम नहीं मिला, तो एक्सेस डिनाई हो जाएगा
+
             if(!currentAdmin && !accessGranted) {
-            document.body.innerHTML = `
-    <div style="text-align:center; padding:50px;">
-        <h1>🚫 Access Denied</h1>
-        <p style="font-size: 18px; margin-top: 10px;">
-            To view this website again, please contact <b style="color:#ff4d4d;">Adarsh&nbsp;Collection</b><br>
-            <b style="color:#ff4d4d;">9291451252</b>
-        </p>
-    </div>
-`;
-
-
+                document.body.innerHTML = `
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; text-align:center; padding:20px;">
+                    <div style="background:white; padding:40px; border-radius:20px; box-shadow:0 10px 25px rgba(0,0,0,0.05); max-width:400px;">
+                        <i class="fa-solid fa-lock" style="font-size: 50px; color: #ef4444; margin-bottom: 20px;"></i>
+                        <h1 style="color:#1f2937; margin-bottom:10px;">Access Denied</h1>
+                        <p style="color:#6b7280; font-size:15px; margin-bottom:20px;">${appSettings.deniedMsg}</p>
+                        <a href="https://wa.me/${appSettings.whatsapp}" style="background:#25D366; color:white; padding:12px 20px; border-radius:12px; text-decoration:none; font-weight:600; display:inline-block;"><i class="fa-brands fa-whatsapp"></i> Message Us</a>
+                    </div>
+                </div>`;
+            } else {
+                allowedCustomerCategories = foundCategories;
+                if(!currentAdmin && allCategories.length > 0) renderCustomerFilters();
             }
         });
 
         function addCustomer() {
-            const name = document.getElementById('custName').value;
+            const name = document.getElementById('custName').value.trim();
             const expiry = document.getElementById('custExpiry').value;
-            if(name && expiry) db.ref('customers').push({name, expiry});
+            let selectedCats = getSelectedCategories('manualCategoryCheckboxes');
+            
+            if(!name || !expiry) { alert("Name and expiry are required!"); return; }
+            if(selectedCats.length === 0) { alert("Please select at least one category!"); return; }
+            
+            db.ref('customers').push({name, expiry, allowedCategories: selectedCats}); 
+            document.getElementById('custName').value = '';
         }
-        
-        let appSettings = { shopName: "Adarsh Collection", whatsapp: "910000000000", locationUrl: "#", adminPassword: "1234", customerBtnText: "Customer View" };
-        let allCategories = [];        let allProducts = [];
-        let defaultCategory = "";
-        let adminCurrentCategory = "";
-        
-        let displayedCount = 12;
-        let adminDisplayedCount = 12;
 
-        function openModal(imageSrc) {
-            document.getElementById('modalImg').src = imageSrc;
+        function generateVipLink() {
+            let selectedCats = getSelectedCategories('vipCategoryCheckboxes');
+            if(selectedCats.length === 0) { alert("Please select at least one category!"); return; }
+            
+            let vipName = "VIP_" + Math.floor(Math.random()*10000);
+            let d = new Date(); d.setDate(d.getDate() + 1);
+            let expiry = d.toISOString().split('T')[0];
+            db.ref('customers').push({name: vipName, expiry: expiry, allowedCategories: selectedCats});
+            let link = window.location.origin + window.location.pathname + "?ref=" + vipName;
+            prompt("यहाँ से अपना मैजिक VIP लिंक कॉपी करें (यह 24 घंटे काम करेगा):", link);
+        }
+
+        let allCategories = []; let allProducts = []; let defaultCategory = ""; let adminCurrentCategory = "";
+        let displayedCount = 12; let adminDisplayedCount = 12;
+
+        const modalImg = document.getElementById('modalImg');
+        function openModal(src, isVideo) {
+            if(isVideo) { modalImg.style.display = "none"; }
+            modalImg.src = src;
             document.getElementById('imageModal').style.display = 'flex';
             history.pushState({modal: 'open'}, null, null);
         }
 
         function closeModal() {
             document.getElementById('imageModal').style.display = 'none';
-            if (history.state && history.state.modal === 'open') {
-                history.back();
-            }
+            if (history.state && history.state.modal === 'open') history.back();
         }
-
-        window.addEventListener('popstate', function(event) {
-            if (document.getElementById('imageModal').style.display === 'flex') {
-                closeModal();
-            }
-        });
+        window.addEventListener('popstate', function(event) { if (document.getElementById('imageModal').style.display === 'flex') closeModal(); });
 
         function verifyAdmin() {
             if (currentAdmin) { switchMode('admin'); return; }
             let pass = prompt("Enter Admin Password:");
-            let correctPass = appSettings.adminPassword || "1234";
-            if (pass === correctPass) { currentAdmin = true; switchMode('admin'); } 
+            if (pass === appSettings.adminPassword) { currentAdmin = true; switchMode('admin'); } 
             else if (pass !== null) { alert("❌ Incorrect Password!"); }
         }
 
         function switchMode(mode) {
-            document.getElementById('btnCustomer').classList.remove('active');
-            document.getElementById('btnAdmin').classList.remove('active');
             document.getElementById('customerSection').classList.remove('active');
             document.getElementById('adminSection').classList.remove('active');
             if(mode === 'admin') {
-                document.getElementById('btnAdmin').classList.add('active');
                 document.getElementById('adminSection').classList.add('active');
+                document.getElementById('btnAdmin').style.display = 'none';
+                document.getElementById('floatingBack').style.display = 'flex';
                 if(adminCurrentCategory) setAdminFilter(adminCurrentCategory);
+                autoGrow(document.getElementById('setSubText'));
+                autoGrow(document.getElementById('setDeniedMsg'));
+                autoGrow(document.getElementById('setFooterTerms'));
+                autoGrow(document.getElementById('setWatermarkText'));
             } else {
-                document.getElementById('btnCustomer').classList.add('active');
                 document.getElementById('customerSection').classList.add('active');
+                document.getElementById('btnAdmin').style.display = 'flex';
+                document.getElementById('floatingBack').style.display = 'none';
                 if(defaultCategory) filterProducts(defaultCategory);
             }
         }
+
         db.ref('appSettings').on('value', (snap) => {
             if(snap.val()) appSettings = Object.assign(appSettings, snap.val());
+            
+            // Apply Theme
+            document.documentElement.style.setProperty('--primary', appSettings.themeColor);
+            document.body.className = `theme-${appSettings.festiveTheme}`;
+            
+            // Marquee
+            const marquee = document.getElementById('marqueeBar');
+            marquee.style.display = (appSettings.showMarquee === "true") ? "block" : "none";
+            document.getElementById('marqueeTextDisplay').innerText = appSettings.marqueeText;
+
+            // Update Text
             document.getElementById('displayShopName').innerText = appSettings.shopName;
+            document.getElementById('displaySubText').innerText = appSettings.subText;
             document.getElementById('displayLocationUrl').href = appSettings.locationUrl;
+            document.getElementById('btnCustomerText').innerText = appSettings.customerBtnText;
+            document.getElementById('loadMoreBtn').innerText = appSettings.loadMoreText;
+            
+            // Footer Rules
+            document.getElementById('footerTermsDisplay').innerText = appSettings.footerTerms;
+            
+            // Render Dynamic Social Links (Customer View)
+            const socialContainer = document.getElementById('socialLinksDisplay');
+            socialContainer.innerHTML = '';
+            if(appSettings.socialLinks) {
+                Object.keys(appSettings.socialLinks).forEach(platform => {
+                    const url = appSettings.socialLinks[platform];
+                    socialContainer.innerHTML += `<a href="${url}" target="_blank"><i class="fa-brands fa-${platform}"></i></a>`;
+                });
+            }
+
+            // Update Admin Inputs
+            document.getElementById('setThemeColor').value = appSettings.themeColor;
+            document.getElementById('setFestiveTheme').value = appSettings.festiveTheme;
             document.getElementById('setShopName').value = appSettings.shopName;
+            document.getElementById('setSubText').value = appSettings.subText;
+            document.getElementById('setShowMarquee').value = appSettings.showMarquee;
+            document.getElementById('setMarqueeText').value = appSettings.marqueeText;
             document.getElementById('setWhatsapp').value = appSettings.whatsapp;
             document.getElementById('setLocation').value = appSettings.locationUrl;
             document.getElementById('setAdminPassword').value = appSettings.adminPassword;
-            document.getElementById('setCustomerBtnText').value = appSettings.customerBtnText || "Customer View";
-            document.getElementById('btnCustomer').innerText = appSettings.customerBtnText || "Customer View";
+            document.getElementById('setPrefix').value = appSettings.prefix;
+            document.getElementById('setPageLimit').value = appSettings.pageLimit;
+            document.getElementById('setCustomerBtnText').value = appSettings.customerBtnText;
+            document.getElementById('setLoadMoreText').value = appSettings.loadMoreText;
+            document.getElementById('setDeniedMsg').value = appSettings.deniedMsg;
+            document.getElementById('setFooterTerms').value = appSettings.footerTerms;
+            
+            // Watermark Admin Inputs
+            document.getElementById('setWatermarkText').value = appSettings.watermarkText || appSettings.shopName;
+            document.getElementById('setWatermarkOpacity').value = appSettings.watermarkOpacity !== undefined ? appSettings.watermarkOpacity : 0.3;
+
+            // Render Dynamic Social Links (Admin View)
+            const adminSocialList = document.getElementById('adminSocialList');
+            if(adminSocialList) {
+                adminSocialList.innerHTML = '';
+                if(appSettings.socialLinks) {
+                    Object.keys(appSettings.socialLinks).forEach(platform => {
+                        adminSocialList.innerHTML += `<div class="tag-item"><i class="fa-brands fa-${platform}"></i> ${platform} <i class="fa-solid fa-circle-xmark" style="color:var(--danger); cursor:pointer;" onclick="removeSocialLink('${platform}')"></i></div>`;
+                    });
+                }
+            }
+
+            displayedCount = parseInt(appSettings.pageLimit) || 12;
+            adminDisplayedCount = parseInt(appSettings.pageLimit) || 12;
         });
 
         function saveSettings() {
-            db.ref('appSettings').set({ shopName: document.getElementById('setShopName').value, whatsapp: document.getElementById('setWhatsapp').value, locationUrl: document.getElementById('setLocation').value, adminPassword: document.getElementById('setAdminPassword').value, customerBtnText: document.getElementById('setCustomerBtnText').value });
+            let newData = {
+                themeColor: document.getElementById('setThemeColor').value,
+                festiveTheme: document.getElementById('setFestiveTheme').value,
+                shopName: document.getElementById('setShopName').value,
+                subText: document.getElementById('setSubText').value,
+                showMarquee: document.getElementById('setShowMarquee').value,
+                marqueeText: document.getElementById('setMarqueeText').value,
+                whatsapp: document.getElementById('setWhatsapp').value,
+                locationUrl: document.getElementById('setLocation').value,
+                adminPassword: document.getElementById('setAdminPassword').value,
+                prefix: document.getElementById('setPrefix').value,
+                pageLimit: document.getElementById('setPageLimit').value || 12,
+                customerBtnText: document.getElementById('setCustomerBtnText').value,
+                loadMoreText: document.getElementById('setLoadMoreText').value,
+                deniedMsg: document.getElementById('setDeniedMsg').value,
+                footerTerms: document.getElementById('setFooterTerms').value,
+                watermarkText: document.getElementById('setWatermarkText').value || document.getElementById('setShopName').value,
+                watermarkOpacity: parseFloat(document.getElementById('setWatermarkOpacity').value) || 0.3,
+                socialLinks: appSettings.socialLinks || {}
+            };
+            db.ref('appSettings').set(newData);
             alert("✅ Settings Saved Successfully!");
+        }
+
+        // Functions for Dynamic Social Media Management
+        function addSocialLink() {
+            const platform = document.getElementById('newSocialPlatform').value;
+            const url = document.getElementById('newSocialUrl').value.trim();
+            if(url) {
+                if(!appSettings.socialLinks) appSettings.socialLinks = {};
+                appSettings.socialLinks[platform] = url;
+                db.ref('appSettings/socialLinks').set(appSettings.socialLinks);
+                document.getElementById('newSocialUrl').value = '';
+            }
+        }
+
+        function removeSocialLink(platform) {
+            if(confirm(`Are you sure you want to remove the ${platform} link?`)) {
+                db.ref(`appSettings/socialLinks/${platform}`).remove();
+            }
         }
 
         db.ref('categories').on('value', (snap) => {
@@ -623,24 +690,32 @@
             snap.forEach((child) => {
                 const catName = child.val().name;
                 allCategories.push({ key: child.key, name: catName });
-                list.innerHTML += `<div class="tag-item">${catName} <span onclick="deleteCategory('${child.key}')">✖</span></div>`;
+                list.innerHTML += `<div class="tag-item">${catName} <i class="fa-solid fa-circle-xmark" onclick="deleteCategory('${child.key}')"></i></div>`;
                 select.innerHTML += `<option value="${catName}">${catName}</option>`;
             });
+            
+            // Populate category checkboxes for access control
+            let checkboxHTML = allCategories.map(cat => `<label style="display:flex; align-items:center; gap:5px; background:#f1f5f9; padding:5px 10px; border-radius:6px; cursor:pointer; font-size:13px; margin-bottom:5px;"><input type="checkbox" value="${cat.name}" checked> ${cat.name}</label>`).join('');
+            const vipContainer = document.getElementById('vipCategoryCheckboxes');
+            const manualContainer = document.getElementById('manualCategoryCheckboxes');
+            if(vipContainer) vipContainer.innerHTML = checkboxHTML;
+            if(manualContainer) manualContainer.innerHTML = checkboxHTML;
+
             if (allCategories.length > 0) {
                 if(!allCategories.find(c => c.name === defaultCategory)) defaultCategory = allCategories[0].name;
                 if(!allCategories.find(c => c.name === adminCurrentCategory)) adminCurrentCategory = allCategories[0].name;
             } else { defaultCategory = ""; adminCurrentCategory = ""; }
+            
             renderCustomerFilters(); renderAdminFilters();
-            if(!currentAdmin && defaultCategory) filterProducts(defaultCategory);
-            else if(currentAdmin && adminCurrentCategory) setAdminFilter(adminCurrentCategory);
+            
+            if(currentAdmin && adminCurrentCategory) setAdminFilter(adminCurrentCategory);
         });
 
         function addCategory() {
             const val = document.getElementById('newCategory').value.trim();
             if(val) { db.ref('categories').push({ name: val }); document.getElementById('newCategory').value = ''; }
         }
-
-        function deleteCategory(key) { if(confirm("Are you sure you want to delete this button?")) db.ref('categories/' + key).remove(); }
+        function deleteCategory(key) { if(confirm("Delete this category?")) db.ref('categories/' + key).remove(); }
 
         db.ref('catalogProducts').on('value', (snap) => {
             allProducts = [];
@@ -649,21 +724,42 @@
             if(!currentAdmin) { if(defaultCategory) filterProducts(defaultCategory); } 
             else { if(adminCurrentCategory) setAdminFilter(adminCurrentCategory); }
         });
+
         async function uploadProduct() {
             const fileInput = document.getElementById('itemImage');
             const category = document.getElementById('itemCategory').value;
             const files = fileInput.files;
-            if (files.length === 0) { alert("Please select photos!"); return; }
-            if (!category) { alert("Please create a button first!"); return; }
+            if (files.length === 0) { alert("Please select files!"); return; }
+            if (!category) { alert("Please create a category first!"); return; }
+            
             const statusDiv = document.getElementById('uploadStatus'); statusDiv.style.display = 'block';
             for (let i = 0; i < files.length; i++) {
-                statusDiv.innerText = `Uploading ${i + 1} of ${files.length}...`;
-                await processAndUpload(files[i], category);
+                statusDiv.innerText = `Uploading ${i + 1} of ${files.length}... Please wait.`;
+                let file = files[i];
+                if(file.type.startsWith('video/')) {
+                    if(file.size > 2 * 1024 * 1024) { alert("Video too large. Max size 2MB for MP4."); continue; }
+                    await uploadRawFile(file, category, 'video');
+                } else if(file.type === 'image/gif') {
+                    await uploadRawFile(file, category, 'image');
+                } else {
+                    await processAndUploadImage(file, category);
+                }
             }
-            alert("✅ All selected photos uploaded!"); statusDiv.style.display = 'none'; fileInput.value = '';
+            alert("✅ Upload Complete!"); statusDiv.style.display = 'none'; fileInput.value = '';
         }
 
-        function processAndUpload(file, category) {
+        function uploadRawFile(file, category, type) {
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = async function(event) {
+                    await db.ref('catalogProducts').push({ imageUrl: event.target.result, category: category, timestamp: Date.now(), type: type });
+                    resolve();
+                }
+            });
+        }
+
+        function processAndUploadImage(file, category) {
             return new Promise((resolve) => {
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
@@ -671,40 +767,92 @@
                     const img = new Image(); img.src = event.target.result;
                     img.onload = async function() {
                         const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 500; const scaleSize = MAX_WIDTH / img.width;
+                        const MAX_WIDTH = 600; const scaleSize = MAX_WIDTH / img.width;
                         canvas.width = MAX_WIDTH; canvas.height = img.height * scaleSize;
-                        const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        const base64Image = canvas.toDataURL('image/jpeg', 0.7);
-                        await db.ref('catalogProducts').push({ imageUrl: base64Image, category: category, timestamp: Date.now() });
+                        const ctx = canvas.getContext('2d'); 
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        
+                        ctx.save();
+                        
+                        // Apply Editable Watermark Opacity from Admin Panel
+                        ctx.globalAlpha = appSettings.watermarkOpacity !== undefined ? parseFloat(appSettings.watermarkOpacity) : 0.3;
+                        ctx.globalCompositeOperation = "source-over"; // Reset to default blending
+                        
+                        // Text Setup
+                        ctx.font = "bold 36px Poppins";
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "middle";
+                        ctx.translate(canvas.width/2, canvas.height/2);
+                        ctx.rotate(-Math.PI/4);
+                        
+                        // Fill and Stroke Setup
+                        ctx.fillStyle = "#ffffff";     // White inside
+                        ctx.strokeStyle = "#000000";   // Black outline
+                        ctx.lineWidth = 2;             // Outline thickness
+                        
+                        let wmText = appSettings.watermarkText || appSettings.shopName;
+                        // Split text to support multi-line
+                        let lines = wmText.split('\n');
+                        let lineHeight = 42; 
+                        let startY = -((lines.length - 1) * lineHeight) / 2;
+                        
+                        for(let j = 0; j < lines.length; j++) {
+                            // Draw the outline first, then fill it
+                            ctx.strokeText(lines[j], 0, startY + (j * lineHeight));
+                            ctx.fillText(lines[j], 0, startY + (j * lineHeight));
+                        }
+                        
+                        ctx.restore();
+
+                        const base64Image = canvas.toDataURL('image/jpeg', 0.8);
+                        await db.ref('catalogProducts').push({ imageUrl: base64Image, category: category, timestamp: Date.now(), type: 'image' });
                         resolve();
                     }
                 }
             });
         }
 
-        function deleteProduct(id) { if(confirm("Delete this photo?")) db.ref('catalogProducts/' + id).remove(); }
+        function deleteProduct(id) { if(confirm("Delete this item?")) db.ref('catalogProducts/' + id).remove(); }
+        function editProduct(id, currentCategory) { let newCat = prompt("Enter new category:", currentCategory); if(newCat) db.ref('catalogProducts/' + id).update({ category: newCat }); }
 
-        function editProduct(id, currentCategory) {
-            let newCat = prompt("Enter new category name:", currentCategory);
-            if(newCat) db.ref('catalogProducts/' + id).update({ category: newCat });
-        }
-
-        function downloadAndAskWhatsApp(dataUrl, shortId, waLink) {
-            const a = document.createElement('a'); a.href = dataUrl; a.download = `Item_${shortId}.jpg`; document.body.appendChild(a); a.click(); document.body.removeChild(a);
-            setTimeout(() => { window.open(waLink, '_blank'); }, 500);
+        function downloadAndAskWhatsApp(dataUrl, shortId) {
+            const waLink = `https://wa.me/${appSettings.whatsapp}?text=Hello, I want to ask about this item. ID: ${shortId}`;
+            if(dataUrl.length > 500) {
+                const a = document.createElement('a'); a.href = dataUrl; a.download = `Item_${shortId}`; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+            }
+            setTimeout(() => { window.open(waLink, '_blank'); }, 600);
         }
 
         function renderCustomerFilters() {
             const container = document.getElementById('customerFilters');
+            if(!container) return;
             container.innerHTML = '';
-            allCategories.forEach(cat => {                const isActive = (cat.name === defaultCategory) ? 'active-filter' : '';
+            
+            let visibleCategories = allCategories;
+            
+            // Filter categories if customer is restricted
+            if(!currentAdmin && allowedCustomerCategories && allowedCustomerCategories.length > 0) {
+                visibleCategories = allCategories.filter(cat => allowedCustomerCategories.includes(cat.name));
+            }
+
+            if(visibleCategories.length > 0 && !visibleCategories.find(c => c.name === defaultCategory)) {
+                defaultCategory = visibleCategories[0].name;
+            }
+
+            visibleCategories.forEach(cat => {                
+                const isActive = (cat.name === defaultCategory) ? 'active-filter' : '';
                 container.innerHTML += `<button class="${isActive}" onclick="filterProducts('${cat.name}', this)">${cat.name}</button>`;
             });
+
+            if(!currentAdmin && defaultCategory) {
+                displayedCount = parseInt(appSettings.pageLimit) || 12;
+                renderCustomerGrid(true);
+            }
         }
 
         function filterProducts(category, btnElement) {
             if(btnElement) { document.querySelectorAll('#customerFilters button').forEach(b => b.classList.remove('active-filter')); btnElement.classList.add('active-filter'); defaultCategory = category; }
-            displayedCount = 12;
+            displayedCount = parseInt(appSettings.pageLimit) || 12;
             renderCustomerGrid(true);
         }
 
@@ -713,20 +861,30 @@
             const loadMoreBtn = document.getElementById('loadMoreBtn');
             if (isReset) grid.innerHTML = '';
             let filtered = allProducts.filter(p => p.category === defaultCategory);
-            
+
             let start = grid.children.length;
             let toShow = filtered.slice(start, displayedCount);
             
             toShow.forEach(product => {
-                const waLink = `https://wa.me/${appSettings.whatsapp}`;
-                grid.innerHTML += `<div class="product-card"><img src="${product.imageUrl}" onclick="openModal('${product.imageUrl}')"><div class="id-label">ID: ${product.id.slice(-6)}</div><button class="whatsapp-btn" onclick="downloadAndAskWhatsApp('${product.imageUrl}', '${product.id.slice(-6)}', '${waLink}')">⬇️ Download & WhatsApp</button></div>`;
+                let mediaTag = product.type === 'video' ? 
+                    `<video src="${product.imageUrl}" autoplay loop muted playsinline onclick="openModal('${product.imageUrl}', true)"></video>` : 
+                    `<img src="${product.imageUrl}" loading="lazy" onclick="openModal('${product.imageUrl}', false)">`;
+
+                grid.innerHTML += `
+                <div class="product-card">
+                    <div class="image-container">${mediaTag}</div>
+                    <div class="id-label">${appSettings.prefix} ${product.id.slice(-6)}</div>
+                    <button class="whatsapp-btn" onclick="downloadAndAskWhatsApp('${product.imageUrl}', '${product.id.slice(-6)}')">
+                        <i class="fa-brands fa-whatsapp" style="font-size: 16px;"></i> Download & Ask on WhatsApp
+                    </button>
+                </div>`;
             });
-            
+
             loadMoreBtn.style.display = (filtered.length > grid.children.length) ? 'block' : 'none';
         }
 
         function loadMore() {
-            displayedCount += 12;
+            displayedCount += parseInt(appSettings.pageLimit) || 12;
             renderCustomerGrid(false);
         }
 
@@ -741,27 +899,37 @@
 
         function setAdminFilter(category, btnElement) {
             if(btnElement) { document.querySelectorAll('#adminFilters button').forEach(b => b.classList.remove('active-filter')); btnElement.classList.add('active-filter'); adminCurrentCategory = category; }
-            adminDisplayedCount = 12;
+            adminDisplayedCount = parseInt(appSettings.pageLimit) || 12;
             renderAdminGrid(true);
         }
 
         function renderAdminGrid(isReset = false) {
-            const grid = document.getElementById('adminProductGrid');            const loadMoreAdminBtn = document.getElementById('loadMoreAdminBtn');
+            const grid = document.getElementById('adminProductGrid');            
+            const loadMoreAdminBtn = document.getElementById('loadMoreAdminBtn');
             if (isReset) grid.innerHTML = '';
             let filtered = allProducts.filter(p => p.category === adminCurrentCategory);
-            
+
             let start = grid.children.length;
             let toShow = filtered.slice(start, adminDisplayedCount);
             
             toShow.forEach(product => {
-                grid.innerHTML += `<div class="product-card"><img src="${product.imageUrl}" onclick="openModal('${product.imageUrl}')"><div class="id-label">ID: ${product.id.slice(-6)}</div><div class="btn-group"><button class="edit-btn" onclick="editProduct('${product.id}', '${product.category}')">✏️ Edit</button><button class="delete-btn" onclick="deleteProduct('${product.id}')">🗑️ Delete</button></div></div>`;
+                let mediaTag = product.type === 'video' ? `<video src="${product.imageUrl}" autoplay loop muted playsinline></video>` : `<img src="${product.imageUrl}" loading="lazy">`;
+                grid.innerHTML += `
+                <div class="product-card">
+                    <div class="image-container" onclick="openModal('${product.imageUrl}', ${product.type==='video'})">${mediaTag}</div>
+                    <div class="id-label">${appSettings.prefix} ${product.id.slice(-6)}</div>
+                    <div class="btn-group">
+                        <button class="edit-btn" onclick="editProduct('${product.id}', '${product.category}')"><i class="fa-solid fa-pen"></i></button>
+                        <button class="delete-btn" onclick="deleteProduct('${product.id}')"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </div>`;
             });
-            
+
             loadMoreAdminBtn.style.display = (filtered.length > grid.children.length) ? 'block' : 'none';
         }
 
         function loadMoreAdmin() {
-            adminDisplayedCount += 12;
+            adminDisplayedCount += parseInt(appSettings.pageLimit) || 12;
             renderAdminGrid(false);
         }
     </script>
