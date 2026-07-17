@@ -812,6 +812,32 @@
             }
         });
 
+        // NEW: Cloudinary Upload Function for Videos
+        function uploadVideoToCloudinary(file, category) {
+            return new Promise(async (resolve) => {
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('upload_preset', 'adarsh_unsigned');
+
+                try {
+                    const response = await fetch('https://api.cloudinary.com/v1_1/ir2se4u5/video/upload', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await response.json();
+                    if(data.secure_url) {
+                        await db.ref('catalogProducts').push({ imageUrl: data.secure_url, category: category, timestamp: Date.now(), type: 'video' });
+                    } else {
+                        alert("Video upload failed!");
+                    }
+                } catch(err) {
+                    console.error("Cloudinary Error:", err);
+                    alert("Video upload failed!");
+                }
+                resolve();
+            });
+        }
+
         async function uploadProduct() {
             const fileInput = document.getElementById('itemImage');
             const category = document.getElementById('itemCategory').value;
@@ -823,9 +849,11 @@
             for (let i = 0; i < files.length; i++) {
                 statusDiv.innerText = `Uploading ${i + 1} of ${files.length}... Please wait.`;
                 let file = files[i];
+                
                 if(file.type.startsWith('video/')) {
-                    if(file.size > 2 * 1024 * 1024) { alert("Video too large. Max size 2MB for MP4."); continue; }
-                    await uploadRawFile(file, category, 'video');
+                    // Changed limit to 50MB for Cloudinary uploads
+                    if(file.size > 50 * 1024 * 1024) { alert("Video too large. Max size 50MB."); continue; }
+                    await uploadVideoToCloudinary(file, category);
                 } else if(file.type === 'image/gif') {
                     await uploadRawFile(file, category, 'image');
                 } else {
