@@ -19,12 +19,17 @@
             --surface: #ffffff;
             --text-dark: #1f2937;
             --text-muted: #6b7280;
+            --denied-bg: #ffffff;
+            --denied-text: #1f2937;
+            --denied-subtext: #6b7280;
             --whatsapp: #25D366;
             --danger: #ef4444;
             --radius-lg: 20px;
             --radius-md: 12px;
             --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
             --shadow-hover: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            --social-color: #6b7280;
+            --social-opacity: 1;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -39,17 +44,6 @@
             background-attachment: fixed;
             transition: background 0.5s ease;
         }
-
-        /* Themes */
-        body.theme-default { background: var(--bg); }
-        body.theme-bonalu { background: linear-gradient(135deg, #fde047 0%, #d97706 100%); }
-        body.theme-bathukamma { background: linear-gradient(135deg, #f472b6 0%, #be185d 100%); }
-        body.theme-ugadi { background: linear-gradient(135deg, #86efac 0%, #15803d 100%); }
-        body.theme-sankranti { background: linear-gradient(135deg, #fdba74 0%, #c2410c 100%); }
-        body.theme-wedding { background: linear-gradient(135deg, #fca5a5 0%, #be123c 100%); }
-        body.theme-birthday { background: linear-gradient(135deg, #93c5fd 0%, #1d4ed8 100%); }
-        body.theme-saree { background: linear-gradient(135deg, #f9a8d4 0%, #9d174d 100%); }
-        body.theme-dhoti { background: linear-gradient(135deg, #cbd5e1 0%, #475569 100%); }
 
         /* Marquee Announcement */
         .marquee-container {
@@ -205,8 +199,12 @@
         
         /* Updated Social Links Design */
         .social-links { display: flex; justify-content: center; gap: 25px; margin-top: 15px; font-size: 32px; }
-        .social-links a { color: var(--text-muted); transition: color 0.3s, transform 0.3s; }
-        .social-links a:hover { color: var(--primary); transform: scale(1.1); }
+        .social-links a { 
+            color: var(--social-color); 
+            opacity: var(--social-opacity);
+            transition: opacity 0.3s, transform 0.3s; 
+        }
+        .social-links a:hover { opacity: 1; transform: scale(1.1); }
 
         /* Modal Settings */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); padding: 20px; align-items: center; justify-content: center; }
@@ -293,24 +291,80 @@
 
         <div class="admin-card">
             <h3><i class="fa-solid fa-palette"></i> Design & UI Settings</h3>
+            
+            <!-- Quick Theme Presets (Official / Professional) -->
             <div class="form-group">
-                <label>Theme Color:</label>
-                <input type="color" id="setThemeColor" style="height:40px; padding:2px;">
-            </div>
-            <div class="form-group">
-                <label>Festive / Event Theme:</label>
-                <select id="setFestiveTheme">
-                    <option value="default">Default Theme</option>
-                    <option value="bonalu">Bonalu</option>
-                    <option value="bathukamma">Bathukamma</option>
-                    <option value="ugadi">Ugadi</option>
-                    <option value="sankranti">Sankranti</option>
-                    <option value="wedding">Wedding (Shaadi)</option>
-                    <option value="birthday">Birthday Party</option>
-                    <option value="saree">Saree Function (Langa Voni)</option>
-                    <option value="dhoti">Dhoti Function (Pancha Kattu)</option>
+                <label style="color:var(--primary); font-weight:600;"><i class="fa-solid fa-brush"></i> Quick Theme Presets (Official & Professional):</label>
+                <select id="quickPreset" onchange="applyPreset()" style="border: 2px solid var(--primary); background: #f0fdf4;">
+                    <option value="">-- Select a Preset --</option>
+                    <option value="corp_blue">Corporate Blue (Classic)</option>
+                    <option value="exec_slate">Executive Slate (Grey)</option>
+                    <option value="trust_navy">Trust Navy (Dark Blue)</option>
+                    <option value="min_mono">Minimalist Monochrome (Black & White)</option>
+                    <option value="sub_teal">Subtle Teal (Professional Green)</option>
+                    <option value="prof_indigo">Professional Indigo</option>
+                    <option value="royal_burgundy">Royal Burgundy (Deep Red)</option>
+                    <option value="mod_emerald">Modern Emerald</option>
+                    <option value="steel_gray">Steel Gray</option>
+                    <option value="class_crimson">Classic Crimson</option>
+                    <option value="pure_light">Pure Light (Sky Blue)</option>
+                    <option value="warm_espresso">Warm Espresso (Brown)</option>
+                    <option value="mid_charcoal">Midnight Charcoal (Dark Theme)</option>
+                    <option value="deep_forest">Deep Forest (Dark Theme)</option>
+                    <option value="dark_sapphire">Dark Sapphire (Dark Theme)</option>
                 </select>
             </div>
+            
+            <hr style="border:none; border-top:1px solid #eee; margin:20px 0;">
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Theme Color (Primary):</label>
+                    <input type="color" id="setThemeColor" style="height:40px; padding:2px;">
+                </div>
+                <div class="form-group">
+                    <label>Background Color:</label>
+                    <input type="color" id="setBgColor" style="height:40px; padding:2px;">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Main Text Color:</label>
+                    <input type="color" id="setMainTextColor" style="height:40px; padding:2px;">
+                </div>
+                <div class="form-group">
+                    <label>Sub Text Color:</label>
+                    <input type="color" id="setMutedTextColor" style="height:40px; padding:2px;">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Denied Box Bg:</label>
+                    <input type="color" id="setDeniedBgColor" style="height:40px; padding:2px;">
+                </div>
+                <div class="form-group">
+                    <label>Denied Main Text:</label>
+                    <input type="color" id="setDeniedTextColor" style="height:40px; padding:2px;">
+                </div>
+                <div class="form-group">
+                    <label>Denied Sub Text:</label>
+                    <input type="color" id="setDeniedSubtextColor" style="height:40px; padding:2px;">
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Social Icons Color:</label>
+                    <input type="color" id="setSocialColor" style="height:40px; padding:2px;">
+                </div>
+                <div class="form-group">
+                    <label>Social Icons Opacity (0.1 to 1.0):</label>
+                    <input type="number" step="0.1" min="0.1" max="1.0" id="setSocialOpacity">
+                </div>
+            </div>
+            
             <div class="form-group">
                 <label>Shop Name:</label>
                 <input type="text" id="setShopName">
@@ -331,7 +385,6 @@
                 <input type="text" id="setMarqueeText">
             </div>
             
-            <!-- Updated Editable Watermark Settings with Textarea for multi-line -->
             <div class="form-row" style="margin-top: 10px;">
                 <div class="form-group" style="flex:2;">
                     <label>Watermark Text (Press Enter for new line):</label>
@@ -449,7 +502,10 @@
             shopName: "Adarsh Collection", subText: "Welcome to our digital catalog.", 
             whatsapp: "919291451252", locationUrl: "#", adminPassword: "1234", 
             customerBtnText: "Customer View", loadMoreText: "Load More", 
-            themeColor: "#4f46e5", festiveTheme: "default", 
+            themeColor: "#4f46e5", bgColor: "#f3f4f6",
+            mainTextColor: "#1f2937", mutedTextColor: "#6b7280",
+            deniedBgColor: "#ffffff", deniedTextColor: "#1f2937", deniedSubtextColor: "#6b7280",
+            socialColor: "#6b7280", socialOpacity: 1.0,
             showMarquee: "false", marqueeText: "Welcome!", 
             pageLimit: 12, prefix: "ID:", deniedMsg: "To view this catalog, please contact us on WhatsApp.",
             footerTerms: "No Return, No Exchange.", 
@@ -465,9 +521,55 @@
             element.style.height = (element.scrollHeight) + "px";
         }
 
-        function getSelectedCategories(containerId) {
-            let checkboxes = document.querySelectorAll(`#${containerId} input[type="checkbox"]:checked`);
-            return Array.from(checkboxes).map(cb => cb.value);
+        // Apply Official Preset Function
+        function applyPreset() {
+            const preset = document.getElementById('quickPreset').value;
+            if(!preset) return;
+
+            let colors = {};
+            if(preset === 'corp_blue') {
+                colors = { primary: "#2563eb", bg: "#f8fafc", main: "#0f172a", muted: "#64748b", dbg: "#ffffff", dt: "#0f172a", ds: "#64748b", soc: "#2563eb" };
+            } else if(preset === 'exec_slate') {
+                colors = { primary: "#475569", bg: "#f1f5f9", main: "#1e293b", muted: "#64748b", dbg: "#ffffff", dt: "#1e293b", ds: "#64748b", soc: "#475569" };
+            } else if(preset === 'trust_navy') {
+                colors = { primary: "#1e3a8a", bg: "#f0f4f8", main: "#172554", muted: "#475569", dbg: "#ffffff", dt: "#172554", ds: "#475569", soc: "#1e3a8a" };
+            } else if(preset === 'min_mono') {
+                colors = { primary: "#171717", bg: "#ffffff", main: "#171717", muted: "#525252", dbg: "#fafafa", dt: "#171717", ds: "#525252", soc: "#171717" };
+            } else if(preset === 'sub_teal') {
+                colors = { primary: "#0f766e", bg: "#f0fdfa", main: "#134e4a", muted: "#334155", dbg: "#ffffff", dt: "#134e4a", ds: "#334155", soc: "#0f766e" };
+            } else if(preset === 'prof_indigo') {
+                colors = { primary: "#4338ca", bg: "#e0e7ff", main: "#1e1b4b", muted: "#4f46e5", dbg: "#ffffff", dt: "#1e1b4b", ds: "#4f46e5", soc: "#4338ca" };
+            } else if(preset === 'royal_burgundy') {
+                colors = { primary: "#881337", bg: "#fdf2f8", main: "#4c0519", muted: "#9f1239", dbg: "#ffffff", dt: "#4c0519", ds: "#9f1239", soc: "#881337" };
+            } else if(preset === 'mod_emerald') {
+                colors = { primary: "#047857", bg: "#ecfdf5", main: "#064e3b", muted: "#059669", dbg: "#ffffff", dt: "#064e3b", ds: "#059669", soc: "#047857" };
+            } else if(preset === 'mid_charcoal') {
+                colors = { primary: "#9ca3af", bg: "#0f172a", main: "#f8fafc", muted: "#cbd5e1", dbg: "#1e293b", dt: "#f8fafc", ds: "#cbd5e1", soc: "#9ca3af" };
+            } else if(preset === 'deep_forest') {
+                colors = { primary: "#34d399", bg: "#064e3b", main: "#ecfdf5", muted: "#a7f3d0", dbg: "#022c22", dt: "#ecfdf5", ds: "#a7f3d0", soc: "#34d399" };
+            } else if(preset === 'steel_gray') {
+                colors = { primary: "#64748b", bg: "#ffffff", main: "#334155", muted: "#94a3b8", dbg: "#f8fafc", dt: "#334155", ds: "#94a3b8", soc: "#64748b" };
+            } else if(preset === 'class_crimson') {
+                colors = { primary: "#991b1b", bg: "#fef2f2", main: "#450a0a", muted: "#7f1d1d", dbg: "#ffffff", dt: "#450a0a", ds: "#7f1d1d", soc: "#991b1b" };
+            } else if(preset === 'pure_light') {
+                colors = { primary: "#0284c7", bg: "#fafafa", main: "#1e293b", muted: "#64748b", dbg: "#ffffff", dt: "#1e293b", ds: "#64748b", soc: "#0284c7" };
+            } else if(preset === 'dark_sapphire') {
+                colors = { primary: "#60a5fa", bg: "#0b1120", main: "#eff6ff", muted: "#94a3b8", dbg: "#172554", dt: "#eff6ff", ds: "#94a3b8", soc: "#60a5fa" };
+            } else if(preset === 'warm_espresso') {
+                colors = { primary: "#b45309", bg: "#fefce8", main: "#451a03", muted: "#78350f", dbg: "#ffffff", dt: "#451a03", ds: "#78350f", soc: "#b45309" };
+            }
+
+            document.getElementById('setThemeColor').value = colors.primary;
+            document.getElementById('setBgColor').value = colors.bg;
+            document.getElementById('setMainTextColor').value = colors.main;
+            document.getElementById('setMutedTextColor').value = colors.muted;
+            document.getElementById('setDeniedBgColor').value = colors.dbg;
+            document.getElementById('setDeniedTextColor').value = colors.dt;
+            document.getElementById('setDeniedSubtextColor').value = colors.ds;
+            document.getElementById('setSocialColor').value = colors.soc;
+            
+            alert("✨ Official Preset applied to the form! Click 'Save UI Settings' to make them live on the website.");
+            document.getElementById('quickPreset').value = ""; // reset dropdown
         }
 
         // Access Control Logic
@@ -490,11 +592,11 @@
             if(!currentAdmin && !accessGranted) {
                 document.body.innerHTML = `
                 <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh; text-align:center; padding:20px;">
-                    <div style="background:white; padding:40px; border-radius:20px; box-shadow:0 10px 25px rgba(0,0,0,0.05); max-width:400px;">
+                    <div style="background:var(--denied-bg, #ffffff); padding:40px; border-radius:20px; box-shadow:0 10px 25px rgba(0,0,0,0.05); max-width:400px;">
                         <i class="fa-solid fa-lock" style="font-size: 50px; color: #ef4444; margin-bottom: 20px;"></i>
-                        <h1 style="color:#1f2937; margin-bottom:10px;">Access Denied</h1>
-                        <p style="color:#6b7280; font-size:15px; margin-bottom:20px;">${appSettings.deniedMsg}</p>
-                        <a href="https://wa.me/${appSettings.whatsapp}" style="background:#25D366; color:white; padding:12px 20px; border-radius:12px; text-decoration:none; font-weight:600; display:inline-block;"><i class="fa-brands fa-whatsapp"></i> Message Us</a>
+                        <h1 style="color:var(--denied-text, #1f2937); margin-bottom:10px;">Access Denied</h1>
+                        <p style="color:var(--denied-subtext, #6b7280); font-size:15px; margin-bottom:20px;">${appSettings.deniedMsg}</p>
+                        <a href="https://wa.me/${appSettings.whatsapp}" style="background:var(--whatsapp); color:white; padding:12px 20px; border-radius:12px; text-decoration:none; font-weight:600; display:inline-block;"><i class="fa-brands fa-whatsapp"></i> Message Us</a>
                     </div>
                 </div>`;
             } else {
@@ -574,9 +676,19 @@
         db.ref('appSettings').on('value', (snap) => {
             if(snap.val()) appSettings = Object.assign(appSettings, snap.val());
             
-            // Apply Theme
+            // Apply Colors and Theme Variables
             document.documentElement.style.setProperty('--primary', appSettings.themeColor);
-            document.body.className = `theme-${appSettings.festiveTheme}`;
+            document.documentElement.style.setProperty('--bg', appSettings.bgColor || '#f3f4f6');
+            
+            document.documentElement.style.setProperty('--text-dark', appSettings.mainTextColor || '#1f2937');
+            document.documentElement.style.setProperty('--text-muted', appSettings.mutedTextColor || '#6b7280');
+            
+            document.documentElement.style.setProperty('--denied-bg', appSettings.deniedBgColor || '#ffffff');
+            document.documentElement.style.setProperty('--denied-text', appSettings.deniedTextColor || '#1f2937');
+            document.documentElement.style.setProperty('--denied-subtext', appSettings.deniedSubtextColor || '#6b7280');
+            
+            document.documentElement.style.setProperty('--social-color', appSettings.socialColor || '#6b7280');
+            document.documentElement.style.setProperty('--social-opacity', appSettings.socialOpacity !== undefined ? appSettings.socialOpacity : 1.0);
             
             // Marquee
             const marquee = document.getElementById('marqueeBar');
@@ -605,7 +717,18 @@
 
             // Update Admin Inputs
             document.getElementById('setThemeColor').value = appSettings.themeColor;
-            document.getElementById('setFestiveTheme').value = appSettings.festiveTheme;
+            document.getElementById('setBgColor').value = appSettings.bgColor || '#f3f4f6';
+            
+            document.getElementById('setMainTextColor').value = appSettings.mainTextColor || '#1f2937';
+            document.getElementById('setMutedTextColor').value = appSettings.mutedTextColor || '#6b7280';
+            
+            document.getElementById('setDeniedBgColor').value = appSettings.deniedBgColor || '#ffffff';
+            document.getElementById('setDeniedTextColor').value = appSettings.deniedTextColor || '#1f2937';
+            document.getElementById('setDeniedSubtextColor').value = appSettings.deniedSubtextColor || '#6b7280';
+            
+            document.getElementById('setSocialColor').value = appSettings.socialColor || '#6b7280';
+            document.getElementById('setSocialOpacity').value = appSettings.socialOpacity !== undefined ? appSettings.socialOpacity : 1.0;
+            
             document.getElementById('setShopName').value = appSettings.shopName;
             document.getElementById('setSubText').value = appSettings.subText;
             document.getElementById('setShowMarquee').value = appSettings.showMarquee;
@@ -642,7 +765,18 @@
         function saveSettings() {
             let newData = {
                 themeColor: document.getElementById('setThemeColor').value,
-                festiveTheme: document.getElementById('setFestiveTheme').value,
+                bgColor: document.getElementById('setBgColor').value,
+                
+                mainTextColor: document.getElementById('setMainTextColor').value,
+                mutedTextColor: document.getElementById('setMutedTextColor').value,
+                
+                deniedBgColor: document.getElementById('setDeniedBgColor').value,
+                deniedTextColor: document.getElementById('setDeniedTextColor').value,
+                deniedSubtextColor: document.getElementById('setDeniedSubtextColor').value,
+                
+                socialColor: document.getElementById('setSocialColor').value,
+                socialOpacity: parseFloat(document.getElementById('setSocialOpacity').value) || 1.0,
+                
                 shopName: document.getElementById('setShopName').value,
                 subText: document.getElementById('setSubText').value,
                 showMarquee: document.getElementById('setShowMarquee').value,
@@ -776,7 +910,7 @@
                         
                         // Apply Editable Watermark Opacity from Admin Panel
                         ctx.globalAlpha = appSettings.watermarkOpacity !== undefined ? parseFloat(appSettings.watermarkOpacity) : 0.3;
-                        ctx.globalCompositeOperation = "source-over"; // Reset to default blending
+                        ctx.globalCompositeOperation = "source-over"; 
                         
                         // Text Setup
                         ctx.font = "bold 36px Poppins";
