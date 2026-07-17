@@ -45,16 +45,19 @@
             transition: background 0.5s ease;
         }
 
-        /* Marquee Announcement */
+        /* Marquee Announcement - Updated to be Sticky & Taller */
         .marquee-container {
             background: var(--primary);
             color: white;
-            padding: 8px;
-            font-size: 13px;
+            padding: 12px 8px; /* Height increased */
+            font-size: 14px;
             font-weight: 500;
             text-align: center;
             overflow: hidden;
             display: none;
+            position: sticky; /* Made it sticky */
+            top: 0;
+            z-index: 105; /* Keeps it above everything */
         }
         .marquee-text { white-space: nowrap; animation: slideLeft 15s linear infinite; display: inline-block; }
         @keyframes slideLeft { 100% { transform: translateX(-100%); } 0% { transform: translateX(100%); } }
@@ -68,10 +71,11 @@
             flex-direction: column;
             align-items: center;
             position: sticky;
-            top: 0;
+            top: 0; /* Dynamic top applied in JS based on marquee */
             z-index: 100;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); 
             text-align: center;
+            transition: top 0.3s ease;
         }
 
         .header-top { display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 10px; }
@@ -229,7 +233,7 @@
         <span class="marquee-text" id="marqueeTextDisplay">Welcome to Adarsh Collection! Special Offers Available.</span>
     </div>
 
-    <div class="header">
+    <div class="header" id="mainHeader">
         <div class="header-top">
             <button id="btnAdmin" class="admin-header-btn" onclick="verifyAdmin()"><i class="fa-solid fa-lock"></i> Admin</button>
             <a id="displayLocationUrl" href="#" target="_blank"><i class="fa-solid fa-location-dot"></i> View Map</a>
@@ -251,6 +255,7 @@
 
     <!-- CUSTOMER SECTION -->
     <div id="customerSection" class="section active">
+        
         <div class="filters" id="customerFilters"></div>
         <div class="product-grid" id="productGrid"></div>
         <button id="loadMoreBtn" class="load-more-btn" style="display:none;" onclick="loadMore()">Load More</button>
@@ -291,31 +296,6 @@
 
         <div class="admin-card">
             <h3><i class="fa-solid fa-palette"></i> Design & UI Settings</h3>
-            
-            <!-- Quick Theme Presets (Official / Professional) -->
-            <div class="form-group">
-                <label style="color:var(--primary); font-weight:600;"><i class="fa-solid fa-brush"></i> Quick Theme Presets (Official & Professional):</label>
-                <select id="quickPreset" onchange="applyPreset()" style="border: 2px solid var(--primary); background: #f0fdf4;">
-                    <option value="">-- Select a Preset --</option>
-                    <option value="corp_blue">Corporate Blue (Classic)</option>
-                    <option value="exec_slate">Executive Slate (Grey)</option>
-                    <option value="trust_navy">Trust Navy (Dark Blue)</option>
-                    <option value="min_mono">Minimalist Monochrome (Black & White)</option>
-                    <option value="sub_teal">Subtle Teal (Professional Green)</option>
-                    <option value="prof_indigo">Professional Indigo</option>
-                    <option value="royal_burgundy">Royal Burgundy (Deep Red)</option>
-                    <option value="mod_emerald">Modern Emerald</option>
-                    <option value="steel_gray">Steel Gray</option>
-                    <option value="class_crimson">Classic Crimson</option>
-                    <option value="pure_light">Pure Light (Sky Blue)</option>
-                    <option value="warm_espresso">Warm Espresso (Brown)</option>
-                    <option value="mid_charcoal">Midnight Charcoal (Dark Theme)</option>
-                    <option value="deep_forest">Deep Forest (Dark Theme)</option>
-                    <option value="dark_sapphire">Dark Sapphire (Dark Theme)</option>
-                </select>
-            </div>
-            
-            <hr style="border:none; border-top:1px solid #eee; margin:20px 0;">
             
             <div class="form-row">
                 <div class="form-group">
@@ -470,6 +450,7 @@
 
         <div class="admin-card">
             <h3><i class="fa-solid fa-pen-to-square"></i> Manage Uploaded Items</h3>
+            
             <div class="filters" id="adminFilters"></div>
             <div class="product-grid" id="adminProductGrid"></div>
             <button id="loadMoreAdminBtn" class="load-more-btn" style="display:none;" onclick="loadMoreAdmin()">Load More</button>
@@ -521,57 +502,6 @@
             element.style.height = (element.scrollHeight) + "px";
         }
 
-        // Apply Official Preset Function
-        function applyPreset() {
-            const preset = document.getElementById('quickPreset').value;
-            if(!preset) return;
-
-            let colors = {};
-            if(preset === 'corp_blue') {
-                colors = { primary: "#2563eb", bg: "#f8fafc", main: "#0f172a", muted: "#64748b", dbg: "#ffffff", dt: "#0f172a", ds: "#64748b", soc: "#2563eb" };
-            } else if(preset === 'exec_slate') {
-                colors = { primary: "#475569", bg: "#f1f5f9", main: "#1e293b", muted: "#64748b", dbg: "#ffffff", dt: "#1e293b", ds: "#64748b", soc: "#475569" };
-            } else if(preset === 'trust_navy') {
-                colors = { primary: "#1e3a8a", bg: "#f0f4f8", main: "#172554", muted: "#475569", dbg: "#ffffff", dt: "#172554", ds: "#475569", soc: "#1e3a8a" };
-            } else if(preset === 'min_mono') {
-                colors = { primary: "#171717", bg: "#ffffff", main: "#171717", muted: "#525252", dbg: "#fafafa", dt: "#171717", ds: "#525252", soc: "#171717" };
-            } else if(preset === 'sub_teal') {
-                colors = { primary: "#0f766e", bg: "#f0fdfa", main: "#134e4a", muted: "#334155", dbg: "#ffffff", dt: "#134e4a", ds: "#334155", soc: "#0f766e" };
-            } else if(preset === 'prof_indigo') {
-                colors = { primary: "#4338ca", bg: "#e0e7ff", main: "#1e1b4b", muted: "#4f46e5", dbg: "#ffffff", dt: "#1e1b4b", ds: "#4f46e5", soc: "#4338ca" };
-            } else if(preset === 'royal_burgundy') {
-                colors = { primary: "#881337", bg: "#fdf2f8", main: "#4c0519", muted: "#9f1239", dbg: "#ffffff", dt: "#4c0519", ds: "#9f1239", soc: "#881337" };
-            } else if(preset === 'mod_emerald') {
-                colors = { primary: "#047857", bg: "#ecfdf5", main: "#064e3b", muted: "#059669", dbg: "#ffffff", dt: "#064e3b", ds: "#059669", soc: "#047857" };
-            } else if(preset === 'mid_charcoal') {
-                colors = { primary: "#9ca3af", bg: "#0f172a", main: "#f8fafc", muted: "#cbd5e1", dbg: "#1e293b", dt: "#f8fafc", ds: "#cbd5e1", soc: "#9ca3af" };
-            } else if(preset === 'deep_forest') {
-                colors = { primary: "#34d399", bg: "#064e3b", main: "#ecfdf5", muted: "#a7f3d0", dbg: "#022c22", dt: "#ecfdf5", ds: "#a7f3d0", soc: "#34d399" };
-            } else if(preset === 'steel_gray') {
-                colors = { primary: "#64748b", bg: "#ffffff", main: "#334155", muted: "#94a3b8", dbg: "#f8fafc", dt: "#334155", ds: "#94a3b8", soc: "#64748b" };
-            } else if(preset === 'class_crimson') {
-                colors = { primary: "#991b1b", bg: "#fef2f2", main: "#450a0a", muted: "#7f1d1d", dbg: "#ffffff", dt: "#450a0a", ds: "#7f1d1d", soc: "#991b1b" };
-            } else if(preset === 'pure_light') {
-                colors = { primary: "#0284c7", bg: "#fafafa", main: "#1e293b", muted: "#64748b", dbg: "#ffffff", dt: "#1e293b", ds: "#64748b", soc: "#0284c7" };
-            } else if(preset === 'dark_sapphire') {
-                colors = { primary: "#60a5fa", bg: "#0b1120", main: "#eff6ff", muted: "#94a3b8", dbg: "#172554", dt: "#eff6ff", ds: "#94a3b8", soc: "#60a5fa" };
-            } else if(preset === 'warm_espresso') {
-                colors = { primary: "#b45309", bg: "#fefce8", main: "#451a03", muted: "#78350f", dbg: "#ffffff", dt: "#451a03", ds: "#78350f", soc: "#b45309" };
-            }
-
-            document.getElementById('setThemeColor').value = colors.primary;
-            document.getElementById('setBgColor').value = colors.bg;
-            document.getElementById('setMainTextColor').value = colors.main;
-            document.getElementById('setMutedTextColor').value = colors.muted;
-            document.getElementById('setDeniedBgColor').value = colors.dbg;
-            document.getElementById('setDeniedTextColor').value = colors.dt;
-            document.getElementById('setDeniedSubtextColor').value = colors.ds;
-            document.getElementById('setSocialColor').value = colors.soc;
-            
-            alert("✨ Official Preset applied to the form! Click 'Save UI Settings' to make them live on the website.");
-            document.getElementById('quickPreset').value = ""; // reset dropdown
-        }
-
         // Access Control Logic
         db.ref('customers').on('value', (snap) => {
             const list = document.getElementById('customerList');
@@ -604,6 +534,17 @@
                 if(!currentAdmin && allCategories.length > 0) renderCustomerFilters();
             }
         });
+
+        // NEW FUNCTION ADDED: Helper to get selected categories for Magic Link & Add Customer
+        function getSelectedCategories(containerId) {
+            let selected = [];
+            const container = document.getElementById(containerId);
+            if(container) {
+                const checkboxes = container.querySelectorAll('input[type="checkbox"]:checked');
+                checkboxes.forEach(cb => selected.push(cb.value));
+            }
+            return selected;
+        }
 
         function addCustomer() {
             const name = document.getElementById('custName').value.trim();
@@ -669,6 +610,7 @@
                 document.getElementById('customerSection').classList.add('active');
                 document.getElementById('btnAdmin').style.display = 'flex';
                 document.getElementById('floatingBack').style.display = 'none';
+                
                 if(defaultCategory) filterProducts(defaultCategory);
             }
         }
@@ -690,9 +632,16 @@
             document.documentElement.style.setProperty('--social-color', appSettings.socialColor || '#6b7280');
             document.documentElement.style.setProperty('--social-opacity', appSettings.socialOpacity !== undefined ? appSettings.socialOpacity : 1.0);
             
-            // Marquee
+            // Marquee & Header Sticky Logic Updated
             const marquee = document.getElementById('marqueeBar');
-            marquee.style.display = (appSettings.showMarquee === "true") ? "block" : "none";
+            const mainHeader = document.getElementById('mainHeader');
+            if (appSettings.showMarquee === "true") {
+                marquee.style.display = "block";
+                setTimeout(() => { mainHeader.style.top = marquee.offsetHeight + 'px'; }, 50);
+            } else {
+                marquee.style.display = "none";
+                mainHeader.style.top = '0px';
+            }
             document.getElementById('marqueeTextDisplay').innerText = appSettings.marqueeText;
 
             // Update Text
@@ -855,8 +804,12 @@
             allProducts = [];
             snap.forEach((child) => { allProducts.push({ id: child.key, ...child.val() }); });
             allProducts.reverse();
-            if(!currentAdmin) { if(defaultCategory) filterProducts(defaultCategory); } 
-            else { if(adminCurrentCategory) setAdminFilter(adminCurrentCategory); }
+            
+            if(!currentAdmin) { 
+                if(defaultCategory) filterProducts(defaultCategory); 
+            } else { 
+                if(adminCurrentCategory) setAdminFilter(adminCurrentCategory); 
+            }
         });
 
         async function uploadProduct() {
@@ -949,12 +902,31 @@
         function deleteProduct(id) { if(confirm("Delete this item?")) db.ref('catalogProducts/' + id).remove(); }
         function editProduct(id, currentCategory) { let newCat = prompt("Enter new category:", currentCategory); if(newCat) db.ref('catalogProducts/' + id).update({ category: newCat }); }
 
-        function downloadAndAskWhatsApp(dataUrl, shortId) {
-            const waLink = `https://wa.me/${appSettings.whatsapp}?text=Hello, I want to ask about this item. ID: ${shortId}`;
-            if(dataUrl.length > 500) {
-                const a = document.createElement('a'); a.href = dataUrl; a.download = `Item_${shortId}`; document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        async function nativeShareProduct(imageUrl, shortId) {
+            if (navigator.share) {
+                try {
+                    const response = await fetch(imageUrl);
+                    const blob = await response.blob();
+                    const file = new File([blob], `Item_${shortId}.jpg`, { type: blob.type || 'image/jpeg' });
+
+                    const shareData = {
+                        title: appSettings.shopName,
+                        text: `Check out this item! ID: ${appSettings.prefix} ${shortId}\n`
+                    };
+
+                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                        shareData.files = [file];
+                    } else {
+                        shareData.url = window.location.href;
+                    }
+
+                    await navigator.share(shareData);
+                } catch (err) {
+                    console.log('Share error:', err);
+                }
+            } else {
+                alert('Native sharing is not supported on this browser.');
             }
-            setTimeout(() => { window.open(waLink, '_blank'); }, 600);
         }
 
         function renderCustomerFilters() {
@@ -978,7 +950,7 @@
                 container.innerHTML += `<button class="${isActive}" onclick="filterProducts('${cat.name}', this)">${cat.name}</button>`;
             });
 
-            if(!currentAdmin && defaultCategory) {
+            if(!currentAdmin) {
                 displayedCount = parseInt(appSettings.pageLimit) || 12;
                 renderCustomerGrid(true);
             }
@@ -994,7 +966,9 @@
             const grid = document.getElementById('productGrid');
             const loadMoreBtn = document.getElementById('loadMoreBtn');
             if (isReset) grid.innerHTML = '';
-            let filtered = allProducts.filter(p => p.category === defaultCategory);
+            
+            let filtered = allProducts;
+            filtered = filtered.filter(p => p.category === defaultCategory);
 
             let start = grid.children.length;
             let toShow = filtered.slice(start, displayedCount);
@@ -1008,8 +982,8 @@
                 <div class="product-card">
                     <div class="image-container">${mediaTag}</div>
                     <div class="id-label">${appSettings.prefix} ${product.id.slice(-6)}</div>
-                    <button class="whatsapp-btn" onclick="downloadAndAskWhatsApp('${product.imageUrl}', '${product.id.slice(-6)}')">
-                        <i class="fa-brands fa-whatsapp" style="font-size: 16px;"></i> Download & Ask on WhatsApp
+                    <button class="whatsapp-btn" onclick="nativeShareProduct('${product.imageUrl}', '${product.id.slice(-6)}')">
+                        <i class="fa-brands fa-whatsapp" style="font-size: 16px;"></i> Share on WhatsApp
                     </button>
                 </div>`;
             });
@@ -1041,7 +1015,9 @@
             const grid = document.getElementById('adminProductGrid');            
             const loadMoreAdminBtn = document.getElementById('loadMoreAdminBtn');
             if (isReset) grid.innerHTML = '';
-            let filtered = allProducts.filter(p => p.category === adminCurrentCategory);
+            
+            let filtered = allProducts;
+            filtered = filtered.filter(p => p.category === adminCurrentCategory);
 
             let start = grid.children.length;
             let toShow = filtered.slice(start, adminDisplayedCount);
