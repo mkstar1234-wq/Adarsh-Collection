@@ -45,19 +45,19 @@
             transition: background 0.5s ease;
         }
 
-        /* Marquee Announcement - Updated to be Sticky & Taller */
+        /* Marquee Announcement - Sticky */
         .marquee-container {
             background: var(--primary);
             color: white;
-            padding: 12px 8px; /* Height increased */
+            padding: 12px 8px; 
             font-size: 14px;
             font-weight: 500;
             text-align: center;
             overflow: hidden;
             display: none;
-            position: sticky; /* Made it sticky */
+            position: sticky; 
             top: 0;
-            z-index: 105; /* Keeps it above everything */
+            z-index: 105; 
         }
         .marquee-text { white-space: nowrap; animation: slideLeft 15s linear infinite; display: inline-block; }
         @keyframes slideLeft { 100% { transform: translateX(-100%); } 0% { transform: translateX(100%); } }
@@ -71,7 +71,7 @@
             flex-direction: column;
             align-items: center;
             position: sticky;
-            top: 0; /* Dynamic top applied in JS based on marquee */
+            top: 0; 
             z-index: 100;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); 
             text-align: center;
@@ -112,7 +112,7 @@
         .section.active { display: block; animation: slideUpFade 0.4s ease forwards; }
         @keyframes slideUpFade { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Filters (Wrapped) */
+        /* Filters */
         .filters { 
             display: flex; 
             flex-wrap: wrap;
@@ -172,7 +172,7 @@
             cursor: pointer; display: flex; align-items: center; justify-content: center; 
             gap: 6px; transition: all 0.3s ease;
         }
-        .whatsapp-btn:hover { background: #1ebc56; }
+        .whatsapp-btn:hover { filter: brightness(1.1); }
 
         .load-more-btn { 
             width: 100%; max-width: 300px; margin: 30px auto 0; display: block;
@@ -201,7 +201,7 @@
         /* Footer */
         .footer { text-align: center; padding: 20px; margin-top: 20px; color: var(--text-muted); font-size: 13px; }
         
-        /* Updated Social Links Design */
+        /* Social Links Design */
         .social-links { display: flex; justify-content: center; gap: 25px; margin-top: 15px; font-size: 32px; }
         .social-links a { 
             color: var(--social-color); 
@@ -213,7 +213,6 @@
         /* Modal Settings */
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); padding: 20px; align-items: center; justify-content: center; }
         .modal-content-wrapper { position: relative; max-width: 100%; max-height: 90vh; border-radius: var(--radius-md); }
-        .modal img { width: 100%; height: auto; max-height: 90vh; object-fit: contain; }
         .close-modal { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; cursor: pointer; z-index: 1001; }
         
         .tag-list { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -246,10 +245,10 @@
         <i class="fa-solid fa-store"></i> <span id="btnCustomerText">Customer View</span>
     </button>
 
-    <div id="imageModal" class="modal">
+    <div id="imageModal" class="modal" onclick="if(event.target === this) closeModal()">
         <span class="close-modal" onclick="closeModal()">&times;</span>
         <div class="modal-content-wrapper">
-            <img id="modalImg" src="">
+            <!-- Content will be injected dynamically via JS -->
         </div>
     </div>
 
@@ -387,13 +386,21 @@
             </div>
             <div class="form-group"><label>Map Link:</label><input type="text" id="setLocation"></div>
             <div class="form-row">
-                <div class="form-group"><label>Product ID Prefix (e.g., ID:, Price:):</label><input type="text" id="setPrefix"></div>
+                <div class="form-group"><label>Product ID Prefix:</label><input type="text" id="setPrefix"></div>
                 <div class="form-group"><label>Items per Page:</label><input type="number" id="setPageLimit"></div>
             </div>
             <div class="form-row">
+                <!-- NEW DOWNLOAD SETTING ADDED HERE -->
+                <div class="form-group">
+                    <label style="color:var(--primary); font-weight:600;">Show Download Button?</label>
+                    <select id="setShowDownloadBtn">
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                    </select>
+                </div>
                 <div class="form-group"><label>Customer View Btn Text:</label><input type="text" id="setCustomerBtnText"></div>
-                <div class="form-group"><label>Load More Btn Text:</label><input type="text" id="setLoadMoreText"></div>
             </div>
+            <div class="form-group"><label>Load More Btn Text:</label><input type="text" id="setLoadMoreText"></div>
             <div class="form-group"><label>Access Denied Message:</label><textarea id="setDeniedMsg" rows="2" oninput="autoGrow(this)"></textarea></div>
             <div class="form-group"><label>Footer Rules (Timings, Returns):</label><textarea id="setFooterTerms" rows="2" oninput="autoGrow(this)"></textarea></div>
             <button class="action-btn" onclick="saveSettings()">Save Shop Settings</button>
@@ -491,18 +498,17 @@
             pageLimit: 12, prefix: "ID:", deniedMsg: "To view this catalog, please contact us on WhatsApp.",
             footerTerms: "No Return, No Exchange.", 
             watermarkText: "Adarsh Collection", watermarkOpacity: 0.3,
+            showDownloadBtn: "false",
             socialLinks: {}
         };
 
         let allowedCustomerCategories = null; 
 
-        // Auto Grow Textarea function
         function autoGrow(element) {
             element.style.height = "5px";
             element.style.height = (element.scrollHeight) + "px";
         }
 
-        // Access Control Logic
         db.ref('customers').on('value', (snap) => {
             const list = document.getElementById('customerList');
             if(list) list.innerHTML = '';
@@ -535,7 +541,6 @@
             }
         });
 
-        // NEW FUNCTION ADDED: Helper to get selected categories for Magic Link & Add Customer
         function getSelectedCategories(containerId) {
             let selected = [];
             const container = document.getElementById(containerId);
@@ -573,16 +578,20 @@
         let allCategories = []; let allProducts = []; let defaultCategory = ""; let adminCurrentCategory = "";
         let displayedCount = 12; let adminDisplayedCount = 12;
 
-        const modalImg = document.getElementById('modalImg');
         function openModal(src, isVideo) {
-            if(isVideo) { modalImg.style.display = "none"; }
-            modalImg.src = src;
+            const wrapper = document.querySelector('.modal-content-wrapper');
+            if (isVideo) {
+                wrapper.innerHTML = `<video src="${src}" controls autoplay playsinline style="max-width: 100%; max-height: 90vh; border-radius: var(--radius-md); outline: none;"></video>`;
+            } else {
+                wrapper.innerHTML = `<img src="${src}" onclick="closeModal()" style="max-width: 100%; max-height: 90vh; object-fit: contain; cursor: pointer;">`;
+            }
             document.getElementById('imageModal').style.display = 'flex';
             history.pushState({modal: 'open'}, null, null);
         }
 
         function closeModal() {
             document.getElementById('imageModal').style.display = 'none';
+            document.querySelector('.modal-content-wrapper').innerHTML = ''; 
             if (history.state && history.state.modal === 'open') history.back();
         }
         window.addEventListener('popstate', function(event) { if (document.getElementById('imageModal').style.display === 'flex') closeModal(); });
@@ -618,21 +627,16 @@
         db.ref('appSettings').on('value', (snap) => {
             if(snap.val()) appSettings = Object.assign(appSettings, snap.val());
             
-            // Apply Colors and Theme Variables
             document.documentElement.style.setProperty('--primary', appSettings.themeColor);
             document.documentElement.style.setProperty('--bg', appSettings.bgColor || '#f3f4f6');
-            
             document.documentElement.style.setProperty('--text-dark', appSettings.mainTextColor || '#1f2937');
             document.documentElement.style.setProperty('--text-muted', appSettings.mutedTextColor || '#6b7280');
-            
             document.documentElement.style.setProperty('--denied-bg', appSettings.deniedBgColor || '#ffffff');
             document.documentElement.style.setProperty('--denied-text', appSettings.deniedTextColor || '#1f2937');
             document.documentElement.style.setProperty('--denied-subtext', appSettings.deniedSubtextColor || '#6b7280');
-            
             document.documentElement.style.setProperty('--social-color', appSettings.socialColor || '#6b7280');
             document.documentElement.style.setProperty('--social-opacity', appSettings.socialOpacity !== undefined ? appSettings.socialOpacity : 1.0);
             
-            // Marquee & Header Sticky Logic Updated
             const marquee = document.getElementById('marqueeBar');
             const mainHeader = document.getElementById('mainHeader');
             if (appSettings.showMarquee === "true") {
@@ -644,17 +648,13 @@
             }
             document.getElementById('marqueeTextDisplay').innerText = appSettings.marqueeText;
 
-            // Update Text
             document.getElementById('displayShopName').innerText = appSettings.shopName;
             document.getElementById('displaySubText').innerText = appSettings.subText;
             document.getElementById('displayLocationUrl').href = appSettings.locationUrl;
             document.getElementById('btnCustomerText').innerText = appSettings.customerBtnText;
             document.getElementById('loadMoreBtn').innerText = appSettings.loadMoreText;
-            
-            // Footer Rules
             document.getElementById('footerTermsDisplay').innerText = appSettings.footerTerms;
             
-            // Render Dynamic Social Links (Customer View)
             const socialContainer = document.getElementById('socialLinksDisplay');
             socialContainer.innerHTML = '';
             if(appSettings.socialLinks) {
@@ -664,20 +664,15 @@
                 });
             }
 
-            // Update Admin Inputs
             document.getElementById('setThemeColor').value = appSettings.themeColor;
             document.getElementById('setBgColor').value = appSettings.bgColor || '#f3f4f6';
-            
             document.getElementById('setMainTextColor').value = appSettings.mainTextColor || '#1f2937';
             document.getElementById('setMutedTextColor').value = appSettings.mutedTextColor || '#6b7280';
-            
             document.getElementById('setDeniedBgColor').value = appSettings.deniedBgColor || '#ffffff';
             document.getElementById('setDeniedTextColor').value = appSettings.deniedTextColor || '#1f2937';
             document.getElementById('setDeniedSubtextColor').value = appSettings.deniedSubtextColor || '#6b7280';
-            
             document.getElementById('setSocialColor').value = appSettings.socialColor || '#6b7280';
             document.getElementById('setSocialOpacity').value = appSettings.socialOpacity !== undefined ? appSettings.socialOpacity : 1.0;
-            
             document.getElementById('setShopName').value = appSettings.shopName;
             document.getElementById('setSubText').value = appSettings.subText;
             document.getElementById('setShowMarquee').value = appSettings.showMarquee;
@@ -687,16 +682,14 @@
             document.getElementById('setAdminPassword').value = appSettings.adminPassword;
             document.getElementById('setPrefix').value = appSettings.prefix;
             document.getElementById('setPageLimit').value = appSettings.pageLimit;
+            document.getElementById('setShowDownloadBtn').value = appSettings.showDownloadBtn || "false";
             document.getElementById('setCustomerBtnText').value = appSettings.customerBtnText;
             document.getElementById('setLoadMoreText').value = appSettings.loadMoreText;
             document.getElementById('setDeniedMsg').value = appSettings.deniedMsg;
             document.getElementById('setFooterTerms').value = appSettings.footerTerms;
-            
-            // Watermark Admin Inputs
             document.getElementById('setWatermarkText').value = appSettings.watermarkText || appSettings.shopName;
             document.getElementById('setWatermarkOpacity').value = appSettings.watermarkOpacity !== undefined ? appSettings.watermarkOpacity : 0.3;
 
-            // Render Dynamic Social Links (Admin View)
             const adminSocialList = document.getElementById('adminSocialList');
             if(adminSocialList) {
                 adminSocialList.innerHTML = '';
@@ -715,17 +708,13 @@
             let newData = {
                 themeColor: document.getElementById('setThemeColor').value,
                 bgColor: document.getElementById('setBgColor').value,
-                
                 mainTextColor: document.getElementById('setMainTextColor').value,
                 mutedTextColor: document.getElementById('setMutedTextColor').value,
-                
                 deniedBgColor: document.getElementById('setDeniedBgColor').value,
                 deniedTextColor: document.getElementById('setDeniedTextColor').value,
                 deniedSubtextColor: document.getElementById('setDeniedSubtextColor').value,
-                
                 socialColor: document.getElementById('setSocialColor').value,
                 socialOpacity: parseFloat(document.getElementById('setSocialOpacity').value) || 1.0,
-                
                 shopName: document.getElementById('setShopName').value,
                 subText: document.getElementById('setSubText').value,
                 showMarquee: document.getElementById('setShowMarquee').value,
@@ -735,6 +724,7 @@
                 adminPassword: document.getElementById('setAdminPassword').value,
                 prefix: document.getElementById('setPrefix').value,
                 pageLimit: document.getElementById('setPageLimit').value || 12,
+                showDownloadBtn: document.getElementById('setShowDownloadBtn').value,
                 customerBtnText: document.getElementById('setCustomerBtnText').value,
                 loadMoreText: document.getElementById('setLoadMoreText').value,
                 deniedMsg: document.getElementById('setDeniedMsg').value,
@@ -747,7 +737,6 @@
             alert("✅ Settings Saved Successfully!");
         }
 
-        // Functions for Dynamic Social Media Management
         function addSocialLink() {
             const platform = document.getElementById('newSocialPlatform').value;
             const url = document.getElementById('newSocialUrl').value.trim();
@@ -777,7 +766,6 @@
                 select.innerHTML += `<option value="${catName}">${catName}</option>`;
             });
             
-            // Populate category checkboxes for access control
             let checkboxHTML = allCategories.map(cat => `<label style="display:flex; align-items:center; gap:5px; background:#f1f5f9; padding:5px 10px; border-radius:6px; cursor:pointer; font-size:13px; margin-bottom:5px;"><input type="checkbox" value="${cat.name}" checked> ${cat.name}</label>`).join('');
             const vipContainer = document.getElementById('vipCategoryCheckboxes');
             const manualContainer = document.getElementById('manualCategoryCheckboxes');
@@ -812,7 +800,6 @@
             }
         });
 
-        // NEW: Cloudinary Upload Function for Videos
         function uploadVideoToCloudinary(file, category) {
             return new Promise(async (resolve) => {
                 const formData = new FormData();
@@ -851,7 +838,6 @@
                 let file = files[i];
                 
                 if(file.type.startsWith('video/')) {
-                    // Changed limit to 50MB for Cloudinary uploads
                     if(file.size > 50 * 1024 * 1024) { alert("Video too large. Max size 50MB."); continue; }
                     await uploadVideoToCloudinary(file, category);
                 } else if(file.type === 'image/gif') {
@@ -889,30 +875,25 @@
                         
                         ctx.save();
                         
-                        // Apply Editable Watermark Opacity from Admin Panel
                         ctx.globalAlpha = appSettings.watermarkOpacity !== undefined ? parseFloat(appSettings.watermarkOpacity) : 0.3;
                         ctx.globalCompositeOperation = "source-over"; 
                         
-                        // Text Setup
                         ctx.font = "bold 36px Poppins";
                         ctx.textAlign = "center";
                         ctx.textBaseline = "middle";
                         ctx.translate(canvas.width/2, canvas.height/2);
                         ctx.rotate(-Math.PI/4);
                         
-                        // Fill and Stroke Setup
-                        ctx.fillStyle = "#ffffff";     // White inside
-                        ctx.strokeStyle = "#000000";   // Black outline
-                        ctx.lineWidth = 2;             // Outline thickness
+                        ctx.fillStyle = "#ffffff";     
+                        ctx.strokeStyle = "#000000";   
+                        ctx.lineWidth = 2;             
                         
                         let wmText = appSettings.watermarkText || appSettings.shopName;
-                        // Split text to support multi-line
                         let lines = wmText.split('\n');
                         let lineHeight = 42; 
                         let startY = -((lines.length - 1) * lineHeight) / 2;
                         
                         for(let j = 0; j < lines.length; j++) {
-                            // Draw the outline first, then fill it
                             ctx.strokeText(lines[j], 0, startY + (j * lineHeight));
                             ctx.fillText(lines[j], 0, startY + (j * lineHeight));
                         }
@@ -930,31 +911,68 @@
         function deleteProduct(id) { if(confirm("Delete this item?")) db.ref('catalogProducts/' + id).remove(); }
         function editProduct(id, currentCategory) { let newCat = prompt("Enter new category:", currentCategory); if(newCat) db.ref('catalogProducts/' + id).update({ category: newCat }); }
 
-        async function nativeShareProduct(imageUrl, shortId) {
+        // Native Share logic
+        async function nativeShareProduct(imageUrl, shortId, type) {
             if (navigator.share) {
+                const shareData = {
+                    title: appSettings.shopName,
+                    text: `Check out this item! ID: ${appSettings.prefix} ${shortId}\n`
+                };
+
                 try {
-                    const response = await fetch(imageUrl);
-                    const blob = await response.blob();
-                    const file = new File([blob], `Item_${shortId}.jpg`, { type: blob.type || 'image/jpeg' });
-
-                    const shareData = {
-                        title: appSettings.shopName,
-                        text: `Check out this item! ID: ${appSettings.prefix} ${shortId}\n`
-                    };
-
-                    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                        shareData.files = [file];
+                    if (type === 'video') {
+                        shareData.url = window.location.href; 
+                        await navigator.share(shareData);
                     } else {
-                        shareData.url = window.location.href;
+                        const response = await fetch(imageUrl);
+                        const blob = await response.blob();
+                        const file = new File([blob], `Item_${shortId}.jpg`, { type: blob.type || 'image/jpeg' });
+                        
+                        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                            shareData.files = [file];
+                        } else {
+                            shareData.url = window.location.href;
+                        }
+                        await navigator.share(shareData);
                     }
-
-                    await navigator.share(shareData);
                 } catch (err) {
                     console.log('Share error:', err);
                 }
             } else {
                 alert('Native sharing is not supported on this browser.');
             }
+        }
+
+        // Download Media Logic
+        async function downloadMedia(url, type, shortId) {
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const blobUrl = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = blobUrl;
+                a.download = `Item_${shortId}${type === 'video' ? '.mp4' : '.jpg'}`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(blobUrl);
+            } catch(e) {
+                window.open(url, '_blank');
+            }
+        }
+
+        // Cloudinary Video Watermark URL Generator (UPDATED)
+        function getWatermarkedVideoUrl(url) {
+            if(!url.includes('cloudinary.com')) return url;
+            let wmText = appSettings.watermarkText || appSettings.shopName;
+            
+            // \n को Cloudinary के लाइन ब्रेक कोड %250A में बदला गया है
+            let encodedText = encodeURIComponent(wmText).replace(/%0A/g, '%250A').replace(/%20/g, '%2520'); 
+            let opacity = Math.round((appSettings.watermarkOpacity !== undefined ? parseFloat(appSettings.watermarkOpacity) : 0.3) * 100);
+            
+            // फॉन्ट साइज़ 40 से बढ़ाकर 80 कर दिया गया है, और align_center लगाया गया है
+            let transform = `l_text:Arial_80_bold_align_center:${encodedText},co_white,o_${opacity}/fl_layer_apply,g_center/`;
+            return url.replace('/upload/', `/upload/${transform}`);
         }
 
         function renderCustomerFilters() {
@@ -964,7 +982,6 @@
             
             let visibleCategories = allCategories;
             
-            // Filter categories if customer is restricted
             if(!currentAdmin && allowedCustomerCategories && allowedCustomerCategories.length > 0) {
                 visibleCategories = allCategories.filter(cat => allowedCustomerCategories.includes(cat.name));
             }
@@ -1002,17 +1019,28 @@
             let toShow = filtered.slice(start, displayedCount);
             
             toShow.forEach(product => {
+                let finalVideoUrl = product.type === 'video' ? getWatermarkedVideoUrl(product.imageUrl) : product.imageUrl;
+
                 let mediaTag = product.type === 'video' ? 
-                    `<video src="${product.imageUrl}" autoplay loop muted playsinline onclick="openModal('${product.imageUrl}', true)"></video>` : 
+                    `<video src="${finalVideoUrl}" autoplay loop muted playsinline onclick="openModal('${finalVideoUrl}', true)"></video>` : 
                     `<img src="${product.imageUrl}" loading="lazy" onclick="openModal('${product.imageUrl}', false)">`;
+
+                let downloadBtnHTML = '';
+                if (appSettings.showDownloadBtn === "true") {
+                    downloadBtnHTML = `
+                    <button class="whatsapp-btn" style="background: #3b82f6; margin-top: 5px;" onclick="downloadMedia('${finalVideoUrl}', '${product.type}', '${product.id.slice(-6)}')">
+                        <i class="fa-solid fa-download" style="font-size: 16px;"></i> Download
+                    </button>`;
+                }
 
                 grid.innerHTML += `
                 <div class="product-card">
                     <div class="image-container">${mediaTag}</div>
                     <div class="id-label">${appSettings.prefix} ${product.id.slice(-6)}</div>
-                    <button class="whatsapp-btn" onclick="nativeShareProduct('${product.imageUrl}', '${product.id.slice(-6)}')">
+                    <button class="whatsapp-btn" onclick="nativeShareProduct('${product.imageUrl}', '${product.id.slice(-6)}', '${product.type}')">
                         <i class="fa-brands fa-whatsapp" style="font-size: 16px;"></i> Share on WhatsApp
                     </button>
+                    ${downloadBtnHTML}
                 </div>`;
             });
 
@@ -1051,10 +1079,13 @@
             let toShow = filtered.slice(start, adminDisplayedCount);
             
             toShow.forEach(product => {
-                let mediaTag = product.type === 'video' ? `<video src="${product.imageUrl}" autoplay loop muted playsinline></video>` : `<img src="${product.imageUrl}" loading="lazy">`;
+                let finalVideoUrl = product.type === 'video' ? getWatermarkedVideoUrl(product.imageUrl) : product.imageUrl;
+
+                let mediaTag = product.type === 'video' ? `<video src="${finalVideoUrl}" autoplay loop muted playsinline onclick="openModal('${finalVideoUrl}', true)"></video>` : `<img src="${product.imageUrl}" loading="lazy" onclick="openModal('${product.imageUrl}', false)">`;
+                
                 grid.innerHTML += `
                 <div class="product-card">
-                    <div class="image-container" onclick="openModal('${product.imageUrl}', ${product.type==='video'})">${mediaTag}</div>
+                    <div class="image-container">${mediaTag}</div>
                     <div class="id-label">${appSettings.prefix} ${product.id.slice(-6)}</div>
                     <div class="btn-group">
                         <button class="edit-btn" onclick="editProduct('${product.id}', '${product.category}')"><i class="fa-solid fa-pen"></i></button>
